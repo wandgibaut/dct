@@ -9,9 +9,21 @@ fake_person = {
     'enable': 'true',
     'loop': 'true',
     'lock': 'false',
-    'inputs': [],
-    'outputs': [],
-    'broadcast': []
+    'inputs': [
+        {'name': 'testInputMemory',
+        'isAnObject': 'false',
+        'ip/port': '127.0.0.1:3000'}
+        ],
+    'outputs': [
+        {'name': 'testOutputMemory',
+        'isAnObject': 'false',
+        'ip/port': '127.0.0.1:3000'}
+        ],
+    'broadcast': [
+        {'name': 'testBroadcastMemory',
+        'isAnObject': 'false',
+        'ip/port': '127.0.0.1:3000'}
+        ]
 }
 
 

@@ -21,7 +21,6 @@ if __name__ == '__main__':
 		field = args[0]
 		value = args[1]
 		change_field(field, value)
-		print('done!')
 	else:
 		print('Error! Wrong number of arguments!')
 		sys.exit()
