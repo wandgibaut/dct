@@ -1,0 +1,9 @@
+considerar as funções de get especificas:
+
+getBroadcast: name e name,index
+
+getInputsofType: type
+
+getinput: name e type, index
+
+igual output
