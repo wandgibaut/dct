@@ -28,8 +28,6 @@ fi
 # result=$(./getOutputs.sh)
 # echo $result
 
-
-
 #list of all
 # name
 # name index
