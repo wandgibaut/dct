@@ -11,6 +11,6 @@ do
 
     run=$(./getLoop.sh)
     timestep=$(./getTimestep.sh)
-    sleep($timestep)
+    sleep $timestep
    
 done
