@@ -15,7 +15,7 @@ def add_entry(field, data):
 	with open('../fields.json', 'r+') as json_data:
 		jsonData = json.load(json_data)
 		vector = jsonData[field]
-		vector.append(json.dumps(data))
+		vector.append(json.loads(data))
 		jsonData[field] = vector
 		
 		print(jsonData[field])
@@ -23,8 +23,43 @@ def add_entry(field, data):
 		json_data.seek(0) #rewind
 		json.dump(jsonData, json_data)
 		json_data.truncate()
-		
 
+def remove_entry(field, name):
+	with open('../fields.json', 'r+') as json_data:
+		jsonData = json.load(json_data)
+		vector = jsonData[field]
+
+		for i in vector:
+			for k, v in i.items():
+				if (v == name):
+					vector.remove(i)
+					return i
+
+		jsonData[field] = vector
+		print(jsonData[field])
+		
+		json_data.seek(0) #rewind
+		json.dump(jsonData, json_data)
+		json_data.truncate()
+
+		
+def set_field_list(field,dataList):
+	jsonList = []
+	for dataString in dataList:
+		jsonList.append(json.loads(dataString))
+
+	with open('../fields.json', 'r+') as json_data:
+		jsonData = json.load(json_data)
+		jsonData[field] = jsonList
+		print(jsonData[field])
+		
+		json_data.seek(0) #rewind
+		json.dump(jsonData, json_data)
+		json_data.truncate()
+
+def convert(string): 
+    li = list(string.split(";")) 
+    return li 
 
 
 if __name__ == '__main__':
@@ -38,14 +73,18 @@ if __name__ == '__main__':
 		if args[0] == 'add':
 			field = args[1]
 			data = args[2]
-			print(data)
 			add_entry(field, data)
 
 		elif args[0] == 'remove':
 			field = args[1]
 			data = args[2]
-			#remove_entry(field, data)
-	
+			remove_entry(field, data)
+		
+		elif args[0] == 'list':
+			field = args[1]
+			dataList = convert(args[2])
+			set_field_list(field, dataList)
+
 	else:
 		print(len(args))
 		print('Error! Wrong number of arguments!')

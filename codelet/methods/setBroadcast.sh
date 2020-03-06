@@ -11,5 +11,5 @@ if [ $# -eq 0 ]
 
 usage: ./setBroadcast.sh <arg>"
     else
-        python3 changeField.py broadcast $1
+        python3 changeField.py list broadcast "$1"
 fi

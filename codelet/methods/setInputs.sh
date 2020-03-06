@@ -11,5 +11,5 @@ if [ $# -eq 0 ]
 
 usage: ./setInputs.sh <arg>"
     else
-        python3 changeField.py inputs $1
+        python3 changeField.py list inputs "$1"
 fi

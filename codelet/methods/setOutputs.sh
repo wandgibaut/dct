@@ -11,5 +11,5 @@ if [ $# -eq 0 ]
 
 usage: ./setOutputs.sh <arg>"
     else
-        python3 changeField.py outputs $1
+        python3 changeField.py list outputs "$1"
 fi

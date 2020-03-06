@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# usage: ./setOutputs.sh <arg>
+# usage: ./addOutput.sh <arg>
 # where <arg> is a string with the outputs to set
-# example: ./setOutputs.sh [{"name":....}, {"name":....}]
+# example: ./addOutput.sh '{"key": "value"}'
 
 
 if [ $# -eq 0 ]
@@ -13,3 +13,6 @@ usage: ./setOutputs.sh <arg>"
     else
         python3 changeField.py add outputs "$1"
 fi
+
+
+# must format like this: '{"key": "value"}' when called
