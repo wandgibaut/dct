@@ -7,3 +7,14 @@ getInputsofType: type
 getinput: name e type, index
 
 igual output
+
+
+fazer a classe mind
+
+
+
+
+docker run --name testCodelet --network host -it ubuntu bash
+docker exec testCodelet /home/testCodelet/methods/run.sh
+
+http://highscalability.com/blog/2015/12/30/how-to-choose-an-in-memory-nosql-solution-performance-measur.html
