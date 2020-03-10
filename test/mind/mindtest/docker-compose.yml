@@ -24,4 +24,6 @@ services:
       - ./codelets/motor/:/home
     command: /home/codelet/methods/run.sh
   
+  mongodb:
+    image: "mongo"
 
