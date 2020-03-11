@@ -1,25 +1,25 @@
 version: '3'
 services:
   sensory:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/sensory/:/home
     command: /home/codelet/methods/run.sh
 
   perceptual:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/perceptual/:/home
     command: /home/codelet/methods/run.sh
   
   behavioral:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/behavioral/:/home
     command: /home/codelet/methods/run.sh
     
   motor:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/motor/:/home
     command: /home/codelet/methods/run.sh
