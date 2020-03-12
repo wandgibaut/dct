@@ -11,16 +11,24 @@ def main(activation):
 
     # cliente = MongoClient('localhost', 27017)
 
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient('mongodb://mongodb:27017/')
     base = client['database-raw-memory']
-    inMem = base['testCodelet-output-memories']
 
     outMem = base['perceptual-input-memories']
 
-    mem = inMem.find_one({'_id': '12345'})
-    I = mem['I']
+    mem = outMem.find_one({'_id': '123456'})
 
-    outMem.update_one({'_id': '12345'}, {'$set': {'I':I+1}})
+    if(mem == None):
+        memory = {'name': 'none','ip/port': '127.0.0.1:8080','isAnObject': 'false','I': 0,'eval': '0.0', '_id': '123456'}
+        outMem.insert_one(memory)
+
+    
+    mem = outMem.find_one({'_id': '123456'})
+
+    I = mem['I']
+    print(I)
+
+    outMem.update_one({'_id': '123456'}, {'$set': {'I':I+1}})
 
 
     #cmd2 = "../accessMemoryObjects.sh"

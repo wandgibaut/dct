@@ -11,16 +11,14 @@ def main(activation):
 
     # cliente = MongoClient('localhost', 27017)
 
-    client = MongoClient('mongodb://localhost:27017/')
+    client = MongoClient('mongodb://mongodb:27017/')
     base = client['database-raw-memory']
     inMem = base['motor-input-memories']
 
-    mem = inMem.find_one({'_id': '12345'})
-    I = mem['I']
-
-
-
-    print(I)
+    mem = inMem.find_one({'_id': '123456'})
+    if (mem != None):
+        I = mem['I']
+        print(I)
 
     #cmd2 = "../accessMemoryObjects.sh"
     #value = int(subprocess.check_output([cmd2,"read", "simpleMemory", "I"]))
