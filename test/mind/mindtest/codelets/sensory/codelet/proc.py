@@ -6,29 +6,23 @@ from pymongo import MongoClient
 
 
 def main(activation):
-    #output = json.dumps(list(list(subprocess.check_output("./getOutput.sh").split('['))[1].split(']'))[0])
-    #print(output)
-
-    # cliente = MongoClient('localhost', 27017)
-
     client = MongoClient('mongodb://mongodb:27017/')
     base = client['database-raw-memory']
-
     outMem = base['perceptual-input-memories']
 
-    mem = outMem.find_one({'_id': '123456'})
+    mem = outMem.find_one({'name': 'sensory'})
 
     if(mem == None):
-        memory = {'name': 'none','ip/port': '127.0.0.1:8080','isAnObject': 'false','I': 0,'eval': '0.0', '_id': '123456'}
+        memory = {'name': 'sensory','ip/port': 'mongodb://mongodb:27017/','type': 'mongo','I': 0,'eval': 0.0}
         outMem.insert_one(memory)
 
     
-    mem = outMem.find_one({'_id': '123456'})
-
+    mem = outMem.find_one({'name': 'sensory'})
+    
     I = mem['I']
     print(I)
 
-    outMem.update_one({'_id': '123456'}, {'$set': {'I':I+1}})
+    outMem.update_one({'name': 'sensory'}, {'$set': {'I':I+1}})
 
 
     #cmd2 = "../accessMemoryObjects.sh"

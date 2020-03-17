@@ -2,25 +2,33 @@ import json
 import sys
 import subprocess
 import os
+import redis
+import pickle
 from pymongo import MongoClient
 
 
 def main(activation):
-    #output = json.dumps(list(list(subprocess.check_output("./getOutput.sh").split('['))[1].split(']'))[0])
-    #print(output)
+    client = redis.Redis(host='redis', port=6379)
+    #client = MongoClient('mongodb://mongodb:27017/')
+    #base = client['database-raw-memory']
+    #outMem = base['perceptual-input-memories']
 
-    # cliente = MongoClient('localhost', 27017)
+    mem = client.get('sensory-memory')
 
-    client = MongoClient('mongodb://localhost:27017/')
-    base = client['database-raw-memory']
-    inMem = base['testCodelet-output-memories']
+    if(mem == None):
+        memory = {'name': 'sensory','ip/port': 'redis://redis:6379/','type': 'redis','I': 0,'eval': 0.0}
+        p_memory = pickle.dumps(memory)
+        #client.hmset('sensory-memory',memory)
+        client.set('sensory-memory',p_memory)
 
-    outMem = base['perceptual-input-memories']
+    #mem = client.hgetall('sensory-memory')
+    mem = pickle.loads(client.get('sensory-memory'))
+    print(mem)
+    mem['I'] +=1
 
-    mem = inMem.find_one({'_id': '12345'})
-    I = mem['I']
+    client.set('sensory-memory',pickle.dumps(mem))
 
-    outMem.update_one({'_id': '12345'}, {'$set': {'I':I+1}})
+    #outMem.update_one({'name': 'sensory'}, {'$set': {'I':I+1}})
 
 
     #cmd2 = "../accessMemoryObjects.sh"

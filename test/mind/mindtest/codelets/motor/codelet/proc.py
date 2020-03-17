@@ -15,10 +15,11 @@ def main(activation):
     base = client['database-raw-memory']
     inMem = base['motor-input-memories']
 
-    mem = inMem.find_one({'_id': '123456'})
+    mem = inMem.find_one({'name': 'behavioral'})
     if (mem != None):
         I = mem['I']
         print(I)
+
 
     #cmd2 = "../accessMemoryObjects.sh"
     #value = int(subprocess.check_output([cmd2,"read", "simpleMemory", "I"]))

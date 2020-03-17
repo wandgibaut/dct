@@ -1,7 +1,7 @@
 version: '3'
 services:
   sensory:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/sensory/:/home
     links:
@@ -11,7 +11,7 @@ services:
     command: /home/codelet/methods/run.sh
 
   perceptual:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/perceptual/:/home
     links:
@@ -21,7 +21,7 @@ services:
     command: /home/codelet/methods/run.sh
   
   behavioral:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/behavioral/:/home
     links:
@@ -31,7 +31,7 @@ services:
     command: /home/codelet/methods/run.sh
     
   motor:
-    image: "python_codelet"
+    image: "codelet_test"
     volumes:
       - ./codelets/motor/:/home
     links:
@@ -47,6 +47,5 @@ services:
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
-    ports:
-      - 27017:27017
+    
 

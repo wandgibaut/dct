@@ -2,31 +2,20 @@ import json
 import sys
 import subprocess
 import os
+import redis
+import pickle
 from pymongo import MongoClient
 
 
 def main(activation):
-    #output = json.dumps(list(list(subprocess.check_output("./getOutput.sh").split('['))[1].split(']'))[0])
-    #print(output)
+    client = redis.Redis(host='redis', port=6379)
 
-    # cliente = MongoClient('localhost', 27017)
-
-    client = MongoClient('mongodb://localhost:27017/')
-    base = client['database-raw-memory']
-    inMem = base['motor-input-memories']
-
-    mem = inMem.find_one({'_id': '12345'})
-    I = mem['I']
+    if (client.get('behavioral-memory') != None):
+        mem = pickle.loads(client.get('behavioral-memory'))
+        I = mem['I']
+        print(I)
 
 
-
-    print(I)
-
-    #cmd2 = "../accessMemoryObjects.sh"
-    #value = int(subprocess.check_output([cmd2,"read", "simpleMemory", "I"]))
-
-    #cmd = "../accessMemoryObjects.sh"
-    #subprocess.call([cmd,"mod", "simpleMemory", "I", str(value+1)])
     
     
  

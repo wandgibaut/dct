@@ -10,19 +10,19 @@ fake_person = {
     'loop': 'true',
     'lock': 'false',
     'inputs': [
-        {'name': 'testInputMemory',
-        'isAnObject': 'false',
-        'ip/port': '127.0.0.1:3000'}
+        {'name': 'test-input/memories/testInputMemory',
+        'type': 'mongo',
+        'ip/port': 'mongodb://mongodb:27017/'}
         ],
     'outputs': [
         {'name': 'testOutputMemory',
-        'isAnObject': 'false',
-        'ip/port': '127.0.0.1:3000'}
+        'type': 'mongo',
+        'ip/port': 'mongodb://mongodb:27017/'}
         ],
     'broadcast': [
         {'name': 'testBroadcastMemory',
-        'isAnObject': 'false',
-        'ip/port': '127.0.0.1:3000'}
+        'type': 'mongo',
+        'ip/port': 'mongodb://mongodb:27017/'}
         ]
 }
 
