@@ -1,0 +1,51 @@
+version: '3'
+services:
+  sensory:
+    image: "codelet_test"
+    volumes:
+      - ./codelets/sensory/:/home
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    command: /home/codelet/methods/run.sh
+
+  perceptual:
+    image: "codelet_test"
+    volumes:
+      - ./codelets/perceptual/:/home
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    command: /home/codelet/methods/run.sh
+  
+  behavioral:
+    image: "codelet_test"
+    volumes:
+      - ./codelets/behavioral/:/home
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    command: /home/codelet/methods/run.sh
+    
+  motor:
+    image: "codelet_test"
+    volumes:
+      - ./codelets/motor/:/home
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    command: /home/codelet/methods/run.sh
+  
+  
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    
+

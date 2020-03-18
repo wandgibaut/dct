@@ -25,4 +25,4 @@ TODO imediato:
 
 mudar os metodos de input e output e de accessMemory (de modo a diferir entre mongo, redis ou tcp)
 definir a env por fora do compose
-testar conexão com o redis
+resolver problema de velocidade

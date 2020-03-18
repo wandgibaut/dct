@@ -3,11 +3,12 @@ import sys
 import subprocess
 import os
 import redis
-import pickle
+import time
 from pymongo import MongoClient
 
 
 def main(activation):
+    init = time.time_ns()
     client = redis.Redis(host='redis', port=6379)
     #client = MongoClient('mongodb://mongodb:27017/')
     #base = client['database-raw-memory']
@@ -17,17 +18,19 @@ def main(activation):
 
     if(mem == None):
         memory = {'name': 'sensory','ip/port': 'redis://redis:6379/','type': 'redis','I': 0,'eval': 0.0}
-        p_memory = pickle.dumps(memory)
+        j_memory = json.dumps(memory)
         #client.hmset('sensory-memory',memory)
-        client.set('sensory-memory',p_memory)
+        client.set('sensory-memory',j_memory)
 
     #mem = client.hgetall('sensory-memory')
-    mem = pickle.loads(client.get('sensory-memory'))
+    mem = json.loads(client.get('sensory-memory'))
     print(mem)
-    mem['I'] +=1
+    I = int(mem['I'])
+    I +=1
+    mem['I'] = str(I)
+    client.set('sensory-memory',json.dumps(mem))
 
-    client.set('sensory-memory',pickle.dumps(mem))
-
+    print((time.time_ns() - init))
     #outMem.update_one({'name': 'sensory'}, {'$set': {'I':I+1}})
 
 
