@@ -26,8 +26,8 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         client = redis.Redis(host='redis', port=6379)
         init = time.time_ns()
     
-        print('a')
-        print('b')
+        #print('a')
+        #print('b')
         I = self.data
         if(client.get('perceptual-memory') != None):
             print('c')
