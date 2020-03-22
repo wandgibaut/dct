@@ -1,5 +1,6 @@
 import json
 from pymongo import MongoClient
+import redis
 
 fake_person = {
     'name': 'none',
@@ -33,22 +34,39 @@ with open('fields.json', 'w') as outfile:
 
 def mount(list_of_codelets):
     for codelet in list_of_codelets:
-        with open('codelets/'+ codelet + '/codelet/fields.json', 'r+') as json_data:  # abrir o fields
-		    jsonData = json.load(json_data)
-		    inputs = jsonData['inputs']
+        with open('/home/codelets/'+ codelet + '/codelet/fields.json', 'r+') as json_data:  # abrir o fields
+            jsonData = json.load(json_data)
+            inputs = jsonData['inputs']
             outputs = jsonData['outputs']
             codelet_name = jsonData['name']
-
+            
             for inputMemory in inputs:
-                if inputMemory['type'] == 'mongo' 
-                    client = MongoClient(inputMemory['ip/port']) # METODO: vai no ip
-                    base = client['database-raw-memory']
-                    inMem = base[convert(inputMemory[name])[0]] # define base, collection (input name)
-                    mem = inMem.find_one({'name': inputMemory['name']}) # e checa se existe uma memoria com esse name
+                try:
+                    if inputMemory['type'] == 'mongo':
+                        client = MongoClient(inputMemory['ip/port']) # METODO: vai no ip
+                        base = client['database-raw-memory']
+                        inMem = base[convert(inputMemory['name'])[0]] # define base, collection (input name)
+                        #debug
+                        print(inputMemory['name'])
+                        print(convert(inputMemory['name']))
+                        mem = inMem.find_one(
+                            {'name': convert(inputMemory['name'])[1]}) # e checa se existe uma memoria com esse name
 
-                    if(mem == None):  # se sim, deixa quieto, se não, cria
-                        memory = {'name': convert(inputMemory[name])[1],'ip/port': inputMemory['ip/port'],'type': 'mongo','I': None,'eval': 0.0}
-                        outMem.insert_one(memory)
+                        if(mem == None):  # se sim, deixa quieto, se não, cria
+                            memory = {'name': convert(inputMemory['name'])[1],'ip/port': inputMemory['ip/port'],'type': 'mongo','I': None,'eval': 0.0}
+                            inMem.insert_one(memory)
+                            print(memory)
+                        
+                    if inputMemory['type'] == 'redis':
+                        client = redis.Redis(host=convert_alt(inputMemory['ip/port'])[0], port=convert(convert_alt(inputMemory['ip/port'])[2])[0])
+                        
+                        mem = {'name': convert(inputMemory['name'])[1],'ip/port': inputMemory['ip/port'],'type': 'redis','I': None,'eval': 0.0}
+                        client.set(convert(inputMemory['name'])[1], json.dumps(mem))
+                    
+                    if inputMemory['type'] == 'tcp':
+                        print('a')
+                except: 
+                    print('an error has occurred!!')
        
         # pegar os inputs e gerar uma memoria de name: name
             # METODO: vai no ip
@@ -62,14 +80,20 @@ def convert(string):
     li = list(string.split("/")) 
     return li 
 
+def convert_alt(string): 
+    li = list(string.split(":")) 
+    return li 
+
+
 if __name__ == '__main__':
-	args = sys.argv[1:]
-	if len(args) == 1:
-		activation = args[0]
-		main(activation)
+    #args = sys.argv[1:]
+	#if len(args) == 1:
+	#activation = args[0]
+    list_of_codelets = ['sensory', 'perceptual', 'behavioral', 'motor']
+    mount(list_of_codelets)
 	
-	else:
-		print(len(args))
-		print('Error! Wrong number of arguments!')
-		sys.exit()
+	#else:
+		#print(len(args))
+		#print('Error! Wrong number of arguments!')
+	#sys.exit()
 

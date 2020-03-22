@@ -98,9 +98,12 @@ def main(activation):
 
     mem = getMemoryObjects('perceptual-input-memories/sensory-memory', 'outputs')
     print(mem)
+    if mem['I'] == None:
+        mem['I'] = -1
+    
     I = int(mem['I'])
     I +=1
-    setMemoryObjects('perceptual-input-memories/sensory-memory', 'I', I)
+    setMemoryObjects('perceptual-input-memories/sensory-memory', 'I', I, 'outputs')
    
     print((time.time_ns() - init))
   

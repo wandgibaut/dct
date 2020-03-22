@@ -40,7 +40,23 @@ services:
       - redis
     command: /home/codelet/methods/run.sh
   
+  touchMemories:
+    image: "python_codelet"
+    volumes:
+      - ./:/home
+    links:
+      - redis
+    depends_on:
+      - redis
+    command: /home/start_mind.sh
   
   redis:
     image: "redis:alpine"
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
 
