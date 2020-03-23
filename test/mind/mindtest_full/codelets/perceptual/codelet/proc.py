@@ -18,7 +18,7 @@ def getMemoryObjects(memory_name, inputOrOutput):
                 if entry['type'] == 'mongo':
                     return getMongoMemory(entry['ip/port'], memory_name)
                 elif entry['type'] == 'redis':
-                    return getRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], memory_name)
+                    return getRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], convert(memory_name)[1])
                 else:
                     return getTCPMemory(convert_alt(entry['ip/port'])[0], convert_alt(entry['ip/port'])[1], memory_name)
         return None
@@ -33,7 +33,7 @@ def setMemoryObjects(memory_name, field, value, inputOrOutput):
                 if entry['type'] == 'mongo':
                     return setMongoMemory(entry['ip/port'], memory_name, field, value)
                 elif entry['type'] == 'redis':
-                    return setRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], memory_name, field, value)
+                    return setRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0],convert(memory_name)[1], field, value)
                 else:
                     return setTCPMemory(convert_alt(entry['ip/port'])[0], convert_alt(entry['ip/port'])[1], memory_name, field, value)
 
@@ -95,14 +95,9 @@ def convert_alt(string):
 
 
 def main(activation):
-    init = time.time_ns()
-  
     mem = getMemoryObjects('perceptual-input-memories/sensory-memory', 'inputs')
     I = mem['I']
     setMemoryObjects('behavioral-input-memories/perceptual-memory', 'I', I, 'outputs')
-
-
-    print((time.time_ns() - init))
 
     
  

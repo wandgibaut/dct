@@ -18,7 +18,7 @@ def getMemoryObjects(memory_name, inputOrOutput):
                 if entry['type'] == 'mongo':
                     return getMongoMemory(entry['ip/port'], memory_name)
                 elif entry['type'] == 'redis':
-                    return getRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], memory_name)
+                    return getRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], convert(memory_name)[1])
                 else:
                     return getTCPMemory(convert_alt(entry['ip/port'])[0], convert_alt(entry['ip/port'])[1], memory_name)
         return None
@@ -33,7 +33,7 @@ def setMemoryObjects(memory_name, field, value, inputOrOutput):
                 if entry['type'] == 'mongo':
                     return setMongoMemory(entry['ip/port'], memory_name, field, value)
                 elif entry['type'] == 'redis':
-                    return setRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], memory_name, field, value)
+                    return setRedisMemory(convert_alt(entry['ip/port'])[0], convert(convert_alt(entry['ip/port'])[2])[0], convert(memory_name)[1], field, value)
                 else:
                     return setTCPMemory(convert_alt(entry['ip/port'])[0], convert_alt(entry['ip/port'])[1], memory_name, field, value)
 
@@ -68,7 +68,7 @@ def getTCPMemory(host, port, memory_name):
     data = 'get_' + memory_name
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
-        sock.connect((host,port))
+        sock.connect((host,int(port)))
         sock.sendall(bytes(data + "\n", "utf-8"))
         # Receive data from the server and shut down
         received = str(sock.recv(1024), "utf-8")
@@ -78,7 +78,7 @@ def setTCPMemory(host, port, memory_name, field, value):
     data = 'set_' + memory_name + '_' + field + '_' + value
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
-        sock.connect((host,port))
+        sock.connect((host,int(port)))
         sock.sendall(bytes(data + "\n", "utf-8"))
         # Receive data from the server and shut down
         received = str(sock.recv(1024), "utf-8")
@@ -96,14 +96,10 @@ def convert_alt(string):
 
 
 def main(activation):
-    init = time.time_ns()
-  
     mem = getMemoryObjects('behavioral-input-memories/perceptual-memory', 'inputs')
-    I = mem['I']
-    setMemoryObjects('motor-input-memories/behavioral-memory', 'I', I, 'outputs')
+    I = str(mem['I'])
+    setMemoryObjects('motor-memory', 'I', I, 'outputs')
 
-
-    print((time.time_ns() - init))
 
 
 

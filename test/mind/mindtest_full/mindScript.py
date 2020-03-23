@@ -1,6 +1,7 @@
 import json
 from pymongo import MongoClient
 import redis
+import subprocess
 
 fake_person = {
     'name': 'none',
@@ -64,6 +65,7 @@ def mount(list_of_codelets):
                         client.set(convert(inputMemory['name'])[1], json.dumps(mem))
                     
                     if inputMemory['type'] == 'tcp':
+                        #subprocess.check_call()
                         print('a')
                 except: 
                     print('an error has occurred!!')
