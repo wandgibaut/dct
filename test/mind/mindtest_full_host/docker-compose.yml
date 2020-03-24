@@ -36,7 +36,7 @@ services:
     ports:
       - "9999:9999"
     network_mode: host
-    command: /home/codelet/methods/run.sh 172.28.1.1 9999
+    command: /home/codelet/methods/run.sh localhost 9999
   
   touchMemories:
     image: "python_codelet"

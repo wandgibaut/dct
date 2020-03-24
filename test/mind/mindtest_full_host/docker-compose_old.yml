@@ -4,52 +4,76 @@ services:
     image: "python_codelet"
     volumes:
       - ./codelets/sensory/:/home
+    links:
+      - redis
     depends_on:
       - redis
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.7.1
     command: /home/codelet/methods/run.sh
 
   perceptual:
     image: "python_codelet"
     volumes:
       - ./codelets/perceptual/:/home
+    links:
+      - redis
     depends_on:
       - redis
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.6.1
     command: /home/codelet/methods/run.sh
   
   behavioral:
     image: "python_codelet"
     volumes:
       - ./codelets/behavioral/:/home
+    links:
+      - redis
     depends_on:
       - redis
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.2.1
     command: /home/codelet/methods/run.sh
     
   motor:
     image: "python_codelet"
     volumes:
       - ./codelets/motor/:/home
+    links:
+      - redis
     depends_on:
       - redis
     ports:
       - "9999:9999"
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.1.1
+        aliases: 
+          - "server"
     command: /home/codelet/methods/run.sh 172.28.1.1 9999
   
   touchMemories:
     image: "python_codelet"
     volumes:
       - ./:/home
+    links:
+      - redis
     depends_on:
       - redis
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.4.1
     command: /home/start_mind.sh
   
   redis:
     image: "redis:alpine"
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.5.1
 
   mongodb:
     image: mongo:latest
@@ -57,7 +81,9 @@ services:
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
-    network_mode: host
+    networks: 
+      server:
+        ipv4_address: 172.28.3.1
 
 networks:
     server:
