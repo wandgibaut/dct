@@ -1,0 +1,51 @@
+version: '3'
+services:
+  example:
+    image: "python_codelet"
+    volumes:
+      - ./codelets/example/:/home
+    links:
+      - redis
+    depends_on:
+      - redis
+    networks: 
+      server:
+        ipv4_address: 172.28.7.1
+    command: /home/codelet/methods/run.sh
+  
+  createMemories:
+    image: "python_codelet"
+    volumes:
+      - ./:/home
+    links:
+      - redis
+    depends_on:
+      - redis
+    networks: 
+      server:
+        ipv4_address: 172.28.4.1
+    command: /home/create_memories.sh
+  
+  redis:
+    image: "redis:alpine"
+    networks: 
+      server:
+        ipv4_address: 172.28.5.1
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    networks: 
+      server:
+        ipv4_address: 172.28.3.1
+
+networks:
+    server:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.28.0.0/9999 
+
