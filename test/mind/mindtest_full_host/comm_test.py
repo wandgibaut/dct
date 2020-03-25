@@ -7,8 +7,8 @@ import time
 import random
 import socket
 
-HOST, PORT = "172.22.0.4", 9999
-data = str(random.randrange(100))
+HOST, PORT = "192.168.0.12", 9999
+data = str('get_motor-memory')
 
 def main(activation):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
