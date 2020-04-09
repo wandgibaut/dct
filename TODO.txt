@@ -23,6 +23,4 @@ http://highscalability.com/blog/2015/12/30/how-to-choose-an-in-memory-nosql-solu
 
 TODO imediato:
 
-mudar os metodos de input e output e de accessMemory (de modo a diferir entre mongo, redis ou tcp)
-definir a env por fora do compose
-resolver problema de velocidade --> ajustat todos os timesteps
+create utility scripts to run a single codelet on docker (.sh with complete commands)

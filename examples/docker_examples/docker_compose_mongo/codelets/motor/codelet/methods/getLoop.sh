@@ -12,28 +12,13 @@
 #                                                                             #
 #*****************************************************************************#
 
+# Returns if he codelet is looping
+# usage: ./getLoop.sh
+
 root_codelet_dir=/home/codelet
 
-run=$($root_codelet_dir/methods/getLoop.sh)
+result= python3 $root_codelet_dir/methods/readField.py loop
 
-if [ $# -eq 2 ]
-    then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
-    else
-        echo "no server was initialized!"
-fi
-
-
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
-    
-    $root_codelet_dir/proc.sh $activation #$memories
-
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
-   
-done
+# use the following commands to retrieve and store the result: 
+# result=$(./getLoop.sh)
+# echo $result

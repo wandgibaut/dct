@@ -21,7 +21,7 @@ if [ $# -eq 2 ]
         echo "initiating server!"
         python3 $root_codelet_dir/server.py "$1" "$2" &
     else
-        echo "no server was initialized!"
+        echo "error initializing server!"
 fi
 
 

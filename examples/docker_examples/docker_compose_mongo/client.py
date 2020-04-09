@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #*****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
@@ -11,29 +9,20 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 #*****************************************************************************#
+import socket
+import sys
 
-root_codelet_dir=/home/codelet
+HOST, PORT = "localhost", 9999
+data = " ".join(sys.argv[1:])
 
-run=$($root_codelet_dir/methods/getLoop.sh)
+# Create a socket (SOCK_STREAM means a TCP socket)
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    # Connect to server and send data
+    sock.connect((HOST, PORT))
+    sock.sendall(bytes(data + "\n", "utf-8"))
 
-if [ $# -eq 2 ]
-    then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
-    else
-        echo "no server was initialized!"
-fi
+    # Receive data from the server and shut down
+    received = str(sock.recv(1024), "utf-8")
 
-
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
-    
-    $root_codelet_dir/proc.sh $activation #$memories
-
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
-   
-done
+print("Sent:     {}".format(data))
+print("Received: {}".format(received))

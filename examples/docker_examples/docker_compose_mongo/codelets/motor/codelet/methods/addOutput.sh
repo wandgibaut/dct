@@ -12,28 +12,20 @@
 #                                                                             #
 #*****************************************************************************#
 
+# usage: ./addOutput.sh <arg>
+# where <arg> is a string with the outputs to set
+# example: ./addOutput.sh '{"key": "value"}'
+
 root_codelet_dir=/home/codelet
 
-run=$($root_codelet_dir/methods/getLoop.sh)
-
-if [ $# -eq 2 ]
+if [ $# -eq 0 ]
     then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
+        echo "No argument supplied!
+
+usage: ./setOutputs.sh <arg>"
     else
-        echo "no server was initialized!"
+        python3 $root_codelet_dir/methods/changeField.py add outputs "$1"
 fi
 
 
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
-    
-    $root_codelet_dir/proc.sh $activation #$memories
-
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
-   
-done
+# must format like this: '{"key": "value"}' when called

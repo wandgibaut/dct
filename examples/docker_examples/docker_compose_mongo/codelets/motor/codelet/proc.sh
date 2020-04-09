@@ -12,28 +12,12 @@
 #                                                                             #
 #*****************************************************************************#
 
+# usage: call your program or write directly here
+# remember $1 is the activation and $2 is a json object with memories 
+
+############# write your program bellow ##############
+
 root_codelet_dir=/home/codelet
 
-run=$($root_codelet_dir/methods/getLoop.sh)
+python $root_codelet_dir/proc.py $1 #$2
 
-if [ $# -eq 2 ]
-    then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
-    else
-        echo "no server was initialized!"
-fi
-
-
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
-    
-    $root_codelet_dir/proc.sh $activation #$memories
-
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
-   
-done

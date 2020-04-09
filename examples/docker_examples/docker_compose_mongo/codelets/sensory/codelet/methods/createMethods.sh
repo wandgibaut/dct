@@ -12,28 +12,16 @@
 #                                                                             #
 #*****************************************************************************#
 
-root_codelet_dir=/home/codelet
+for i in addInput.sh addOutput.sh removeInput.sh removeOutput.sh stop.sh start.sh run.sh proc.sh calculateActivation.sh accessMemoryObjects.sh enable.sh disable.sh; do
+	touch $i
 
-run=$($root_codelet_dir/methods/getLoop.sh)
-
-if [ $# -eq 2 ]
-    then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
-    else
-        echo "no server was initialized!"
-fi
-
-
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
-    
-    $root_codelet_dir/proc.sh $activation #$memories
-
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
-   
 done
+
+for i in Activation.sh Threshold.sh Inputs.sh Outputs.sh Broadcast.sh Loop.sh TimeStep.sh Name.sh Lock.sh; do
+	touch set$i
+	touch get$i
+
+done
+
+
+

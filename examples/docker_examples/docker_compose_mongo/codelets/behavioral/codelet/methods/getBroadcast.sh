@@ -12,28 +12,32 @@
 #                                                                             #
 #*****************************************************************************#
 
+# Returns the codelet broadcast
+# usage: ./getBroadcast.sh (optional) <arg1> <arg2>
+
 root_codelet_dir=/home/codelet
 
-run=$($root_codelet_dir/methods/getLoop.sh)
+if [ $# -eq 0 ]
+then
+    result= python3 $root_codelet_dir/methods/readField.py broadcast
 
-if [ $# -eq 2 ]
-    then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
-    else
-        echo "no server was initialized!"
+elif [ $# -eq 1 ]
+then
+    result= python3 $root_codelet_dir/methods/readField.py broadcast $1
+
+elif [ $# -eq 2 ]
+then
+    result= python3 $root_codelet_dir/methods/readField.py broadcast $1 $2
+
+else
+    echo "Wrong number of arguments!
+
+usage: ./getBroadcast.sh (optional) <arg1> <arg2>"
+
 fi
 
 
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
-    
-    $root_codelet_dir/proc.sh $activation #$memories
+# use the following commands to retrieve and store the result: 
+# result=$(./getBroadcast.sh)
+# echo $result
 
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
-   
-done
