@@ -16,7 +16,7 @@ import json
 
 root_codelet_dir='/home/codelet'
 
-class MyTCPHandler(socketserver.BaseRequestHandler):
+class CodeletTCPHandler(socketserver.BaseRequestHandler):
     def getMemory(self, memory_name):
         with open(root_codelet_dir + '/memories/' +memory_name + '.json', 'r+') as json_data:
             memory = json.dumps(json.load(json_data))
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     if len(args) == 2:
         HOST= args[0]
         PORT  = int(args[1])
-        server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+        server = socketserver.TCPServer((HOST, PORT), CodeletTCPHandler)
 
         # Activate the server; this will keep running until you
         # interrupt the program with Ctrl-C
