@@ -79,8 +79,7 @@ All containers are created with pythonCodelet (botar link) image, which is based
 (exemplos e notas no raspi)
 
 ### Running a Codelet inside an Arduino
-(exemplo e notas no arduino)
-
+soon
 
 # ______________________________________________
 

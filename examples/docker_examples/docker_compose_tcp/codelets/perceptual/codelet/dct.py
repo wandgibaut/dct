@@ -26,7 +26,7 @@ def getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput):
                 if entry['type'] == 'mongo':
                     return getMongoMemory(entry['ip/port'], memory_name)
                 elif entry['type'] == 'redis':
-                    return getRedisMemory(convert(":", entry['ip/port'])[0], convert("/", convert(":", entry['ip/port'])[2])[0], convert("/", memory_name)[1])
+                    return getRedisMemory(entry['ip/port'], convert("/", memory_name)[1])
                 else:
                     #print(convert(":", entry['ip/port'])[0])
                     return getTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1], memory_name)
@@ -42,18 +42,22 @@ def setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
                 if entry['type'] == 'mongo':
                     return setMongoMemory(entry['ip/port'], memory_name, field, value)
                 elif entry['type'] == 'redis':
-                    return setRedisMemory(convert(":", entry['ip/port'])[0], convert("/", convert(":", entry['ip/port'])[2])[0], convert("/", memory_name)[1], field, value)
+                    return setRedisMemory(entry['ip/port'], convert("/", memory_name)[1], field, value)
                 else:
                     return setTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1], memory_name, field, value)
 
 
 
-def getRedisMemory(host, port, memory_name):
+def getRedisMemory(host_port, memory_name):
+    host = convert(':',host_port)[0]
+    port = convert(':',host_port)[1]
     client = redis.Redis(host=host, port=port)
     return json.loads(client.get(memory_name))
 
 
-def setRedisMemory(host, port, memory_name, field, value):
+def setRedisMemory(host_port, memory_name, field, value):
+    host = convert(':',host_port)[0]
+    port = convert(':',host_port)[1]
     client = redis.Redis(host=host, port=port)
     mem = json.loads(client.get(memory_name))
     mem[field] = value

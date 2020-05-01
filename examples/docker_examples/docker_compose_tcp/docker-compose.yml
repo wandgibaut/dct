@@ -13,8 +13,9 @@ services:
       - ./codelets/perceptual/:/home
     ports:
       - "9999:9999"
+      - "9998:9998"
     network_mode: host
-    command: /home/codelet/methods/run.sh 192.168.0.12 9999 
+    command: /home/codelet/methods/run.sh 192.168.0.12:9999 192.168.0.12:9998
   
   touchMemories:
     image: "python_codelet"

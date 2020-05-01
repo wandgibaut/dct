@@ -19,14 +19,16 @@ import dct
 root_codelet_dir='/home/codelet'
 
 def main(activation):
-    mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-memory', 'outputs')
-    print(mem)
-    if mem['I'] == None:
-        mem['I'] = -1
+	mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-memory', 'outputs')
+	mem_2 = dct.getMemoryObjects(root_codelet_dir, 'perceptual-2-memory', 'outputs')
+	print(mem)
+	if mem['I'] == None:
+		mem['I'] = -1
     
-    I = int(mem['I'])
-    I +=1
-    dct.setMemoryObjects(root_codelet_dir, 'perceptual-memory', 'I', str(I), 'outputs')
+	I = int(mem['I'])
+	I +=1
+	dct.setMemoryObjects(root_codelet_dir, 'perceptual-memory', 'I', str(I), 'outputs')
+	dct.setMemoryObjects(root_codelet_dir, 'perceptual-2-memory', 'I', str(I), 'outputs')
 
 
 

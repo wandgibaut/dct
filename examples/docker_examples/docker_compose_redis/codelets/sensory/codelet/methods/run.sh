@@ -16,13 +16,17 @@ root_codelet_dir=/home/codelet
 
 run=$($root_codelet_dir/methods/getLoop.sh)
 
-if [ $# -eq 2 ]
+#echo $n
+#echo $#
+if [ $# -ne 0 ] 
     then
-        echo "initiating server!"
-        python3 $root_codelet_dir/server.py "$1" "$2" &
-    else
-        echo "error initializing server!"
+        echo "initiating servers!"
+        for var in "$@"
+        do
+            python3 $root_codelet_dir/server.py "$var"  &
+        done
 fi
+
 
 
 while $run

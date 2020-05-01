@@ -13,6 +13,7 @@
 import socketserver
 import sys
 import json
+import threading
 
 root_codelet_dir='/home/codelet'
 
@@ -30,7 +31,7 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
             json_data.seek(0) #rewind
             json.dump(jsonData, json_data)
             json_data.truncate()
-            print(jsonData)
+            #print(jsonData)
 
                                             
 
@@ -43,7 +44,7 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
         self.data = self.request.recv(1024).strip()
         list_data = self.convert(self.data.decode())
         if(list_data[0] == 'get'):
-            print(self.getMemory(list_data[1]))
+            #print(self.getMemory(list_data[1]))
             self.request.sendall(bytes(self.getMemory(list_data[1]), "utf-8"))
             
         if(list_data[0] == 'set'):
@@ -51,19 +52,21 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
             self.request.sendall(bytes('success!', "utf-8"))
 
 
+def split(string): 
+    li = list(string.split(":")) 
+    return li 
+
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if len(args) == 2:
-        HOST= args[0]
-        PORT  = int(args[1])
-        server = socketserver.TCPServer((HOST, PORT), CodeletTCPHandler)
+    HOST= split(args[0])[0]
+    PORT  = int(split(args[0])[1])
+    server = socketserver.TCPServer((HOST, PORT), CodeletTCPHandler)
 
-        # Activate the server; this will keep running until you
-        # interrupt the program with Ctrl-C
-        server.serve_forever()
-    else:
-        print(len(args))
-        print('Error! Wrong number of arguments!')
-        sys.exit()
+            # Activate the server; this will keep running until you
+            # interrupt the program with Ctrl-C
+    threading.Thread(target=server.serve_forever).start()
+            #server.serve_forever()
+    
+    
 
     

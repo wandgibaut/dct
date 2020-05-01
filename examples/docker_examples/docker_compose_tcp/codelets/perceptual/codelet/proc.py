@@ -22,8 +22,10 @@ root_codelet_dir='/home/codelet'
 
 def main(activation):
 	mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-memory', 'inputs')
+	mem_2 = dct.getMemoryObjects(root_codelet_dir, 'perceptual-2-memory', 'inputs')
+	
 	I = mem['I']
-	print(I)
+	print(I + ' and ' + mem_2['I'])
 
 	#dct.setMemoryObjects(root_codelet_dir, 'behavioral-input-memories/perceptual-memory', 'I', I, 'outputs')
 
