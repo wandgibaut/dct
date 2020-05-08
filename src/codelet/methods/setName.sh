@@ -16,7 +16,6 @@
 # where <arg> is the name to set
 # example: ./setName.sh codeletName
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
     then

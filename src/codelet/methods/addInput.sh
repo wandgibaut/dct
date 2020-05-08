@@ -16,7 +16,6 @@
 # where <arg> is a string with the inputs to set
 # example: ./addInput.sh '{"key": "value"}'
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
     then

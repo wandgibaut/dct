@@ -14,10 +14,10 @@ import sys
 import redis
 from pymongo import MongoClient
 import socket
+import os
 import dct # the dct utility module
 
-# root_codelet_dir='/home/codelet'
-
+root_codelet_dir= os.getenv('root_codelet_dir')
 
 def main(activation):
     ########################################

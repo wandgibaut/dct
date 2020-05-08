@@ -16,7 +16,6 @@
 # where <arg> is true or false
 # example: ./setLock.sh true
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
     then

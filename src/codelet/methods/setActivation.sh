@@ -18,7 +18,6 @@
 
 # TODO: check boundaries
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
     then

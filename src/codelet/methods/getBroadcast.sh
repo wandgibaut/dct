@@ -15,7 +15,6 @@
 # Returns the codelet broadcast
 # usage: ./getBroadcast.sh (optional) <arg1> <arg2>
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
 then

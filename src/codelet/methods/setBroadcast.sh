@@ -16,7 +16,6 @@
 # where <arg> is a string with the broadcast to set
 # example: ./setBroadcast.sh [{"name":....}, {"name":....}]
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
     then

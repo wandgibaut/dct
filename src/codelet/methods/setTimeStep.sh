@@ -16,7 +16,6 @@
 # where <arg> is the timestep to set
 # example: ./setTimeStep.sh timestep
 
-root_codelet_dir=/home/codelet
 
 
 if [ $# -eq 0 ]

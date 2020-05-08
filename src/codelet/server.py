@@ -14,8 +14,9 @@ import socketserver
 import sys
 import json
 import threading
+import os
 
-root_codelet_dir='/home/codelet'
+root_codelet_dir= os.getenv('root_codelet_dir')
 
 class CodeletTCPHandler(socketserver.BaseRequestHandler):
     def getMemory(self, memory_name):

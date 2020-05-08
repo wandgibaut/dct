@@ -11,8 +11,9 @@
 #*****************************************************************************#
 import json
 import sys
+import os
 
-root_codelet_dir='/home/codelet'
+root_codelet_dir= os.getenv('root_codelet_dir')
 
 def read_field(field):
 	with open(root_codelet_dir +'/fields.json', 'r') as json_data:

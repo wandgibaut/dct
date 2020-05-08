@@ -16,7 +16,6 @@
 # where <arg> is a string with the outputs to set
 # example: ./addOutput.sh '{"key": "value"}'
 
-root_codelet_dir=/home/codelet
 
 if [ $# -eq 0 ]
     then

@@ -12,7 +12,6 @@
 #                                                                             #
 #*****************************************************************************#
 
-root_codelet_dir=/home/codelet
 
 run=$($root_codelet_dir/methods/getLoop.sh)
 

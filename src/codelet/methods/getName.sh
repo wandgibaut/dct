@@ -15,7 +15,6 @@
 # Returns the codelet name
 # usage: ./getName.sh
 
-root_codelet_dir=/home/codelet
 
 result= python3 $root_codelet_dir/methods/readField.py name
 

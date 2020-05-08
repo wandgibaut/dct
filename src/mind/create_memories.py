@@ -38,7 +38,7 @@ def mount(list_of_codelets):
                             print(memory)
                         
                     if inputMemory['type'] == 'redis':
-                        client = redis.Redis(host=convert_alt(inputMemory['ip/port'])[0], port=convert(convert_alt(inputMemory['ip/port'])[2])[0])
+                        client = redis.Redis(host=convert_alt(inputMemory['ip/port'])[0], port=convert_alt(inputMemory['ip/port'])[1])
                         
                         mem = {'name': convert(inputMemory['name'])[1],'ip/port': inputMemory['ip/port'],'type': 'redis','I': None,'eval': 0.0}
                         client.set(convert(inputMemory['name'])[1], json.dumps(mem))
