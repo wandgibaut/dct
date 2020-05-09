@@ -1,0 +1,25 @@
+{
+    "connections": [
+        {
+            "out": "sensory",
+            "in": "perceptual",
+            "ip/port": "localhost:6379",
+            "type": "redis",
+            "group": []
+        },
+        {
+            "out": "perceptual",
+            "in": "behavioral",
+            "ip/port": "localhost:6379",
+            "type": "redis",
+            "group": []
+        },
+        {
+            "out": "behavioral",
+            "in": "motor",
+            "ip/port": "localhost:6379",
+            "type": "redis",
+            "group": ["single_out"]
+        }
+    ]
+}

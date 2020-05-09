@@ -1,0 +1,59 @@
+version: '3'
+services:
+  sensory:
+    image: "python_codelet"
+    volumes:
+      - ./codelets/sensory/:/home
+    depends_on:
+      - redis
+    network_mode: host
+    environment: 
+      - root_codelet_dir=/home/codelet
+    command: /home/codelet/methods/run.sh
+
+  perceptual:
+    image: "python_codelet"
+    volumes:
+      - ./codelets/perceptual/:/home
+    depends_on:
+      - redis
+    network_mode: host
+    environment: 
+      - root_codelet_dir=/home/codelet
+    command: /home/codelet/methods/run.sh
+  
+  behavioral:
+    image: "python_codelet"
+    volumes:
+      - ./codelets/behavioral/:/home
+    depends_on:
+      - redis
+    network_mode: host
+    environment: 
+      - root_codelet_dir=/home/codelet
+    command: /home/codelet/methods/run.sh
+    
+  motor:
+    image: "python_codelet"
+    volumes:
+      - ./codelets/motor/:/home
+    depends_on:
+      - redis
+    network_mode: host
+    environment: 
+      - root_codelet_dir=/home/codelet
+    command: /home/codelet/methods/run.sh
+  
+  
+  touchMemories:
+    image: "python_codelet"
+    volumes:
+      - ./:/home
+    depends_on:
+      - redis
+    network_mode: host
+    command: /home/create_memories.sh sensory perceptual behavioral motor
+
+  redis:
+    image: "redis:alpine"
+    network_mode: host

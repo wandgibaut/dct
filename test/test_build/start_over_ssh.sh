@@ -12,5 +12,11 @@
 #                                                                             #
 #*****************************************************************************#
 
-python3 /home/create_memories.py "$@"
 
+# $1: user@ipaddress
+# $2: /path/to/destination
+# $3: root_codelet_dir
+# $4: args
+
+#set environment variable 
+ssh $1 "$2/$3/methods/run.sh $4"

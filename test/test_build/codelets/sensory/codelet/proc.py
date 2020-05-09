@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #*****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
@@ -11,6 +9,36 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 #*****************************************************************************#
+import json
+import sys
+import redis
+from pymongo import MongoClient
+import socket
+import dct
 
-python3 /home/create_memories.py "$@"
+root_codelet_dir='/home/codelet'
+
+def main(activation):
+    mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-input-memories/sensory-memory', 'outputs')
+    print(mem)
+    if mem['I'] == None:
+        mem['I'] = -1
+    
+    I = int(mem['I'])
+    I +=1
+    dct.setMemoryObjects(root_codelet_dir, 'perceptual-input-memories/sensory-memory', 'I', I, 'outputs')
+
+
+
+
+if __name__ == '__main__':
+	args = sys.argv[1:]
+	if len(args) == 1:
+		activation = args[0]
+		main(activation)
+	
+	else:
+		print(len(args))
+		print('Error! Wrong number of arguments!')
+		sys.exit()
 

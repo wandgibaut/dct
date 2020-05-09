@@ -12,5 +12,15 @@
 #                                                                             #
 #*****************************************************************************#
 
-python3 /home/create_memories.py "$@"
 
+# $1: codelet to pass 
+# $3: user@ipaddress
+# $3: /path/to/destination
+# $4: root_codelet_dir
+
+
+#send the files
+scp -r $1 $2:$3
+
+#set environment variable 
+ssh $2 "echo $4 >> ~/.bashrc"

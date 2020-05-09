@@ -12,5 +12,10 @@
 #                                                                             #
 #*****************************************************************************#
 
-python3 /home/create_memories.py "$@"
+# usage: call your program or write directly here
+# remember to assign 
+
+############# write your program bellow ##############
+
+echo "0.0"
 
