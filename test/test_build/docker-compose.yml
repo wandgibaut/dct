@@ -9,7 +9,7 @@ services:
     network_mode: host
     environment: 
       - root_codelet_dir=/home/codelet
-    command: /home/codelet/methods/run.sh
+    command: /home/codelet/methods/run.sh 127.0.0.1:9999
 
   perceptual:
     image: "python_codelet"
@@ -20,7 +20,7 @@ services:
     network_mode: host
     environment: 
       - root_codelet_dir=/home/codelet
-    command: /home/codelet/methods/run.sh
+    command: /home/codelet/methods/run.sh 127.0.0.1:9998
   
   behavioral:
     image: "python_codelet"
@@ -31,7 +31,7 @@ services:
     network_mode: host
     environment: 
       - root_codelet_dir=/home/codelet
-    command: /home/codelet/methods/run.sh
+    command: /home/codelet/methods/run.sh 127.0.0.1:9997
     
   motor:
     image: "python_codelet"
@@ -42,7 +42,7 @@ services:
     network_mode: host
     environment: 
       - root_codelet_dir=/home/codelet
-    command: /home/codelet/methods/run.sh
+    command: /home/codelet/methods/run.sh 127.0.0.1:9996
   
   
   touchMemories:

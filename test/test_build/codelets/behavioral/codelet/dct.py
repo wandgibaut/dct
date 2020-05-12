@@ -114,6 +114,29 @@ def setTCPMemory(host, port, memory_name, field, value):
         return received
 
 
+def add_memory_to_group(root_codelet_dir, memory_name, newGroup, inputOrOutput):
+    memory_group = getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput)['group']
+    memory_group.append(newGroup)
+    setMemoryObjects(root_codelet_dir, memory_name, 'group', memory_group, inputOrOutput)
+
+
+def getCodeletInfo(host, port):
+    data = 'info_'
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        # Connect to server and send data
+        sock.connect((host,int(port)))
+        sock.sendall(bytes(data + "\n", "utf-8"))
+        # Receive data from the server and shut down
+        received = str(sock.recv(1024), "utf-8")
+        print(received)
+        try:
+            answer = json.loads(received)
+        except:
+            answer = []
+            raise Exception
+        return answer
+
+
 def convert(separator, string): 
     li = list(string.split(separator)) 
     return li 
