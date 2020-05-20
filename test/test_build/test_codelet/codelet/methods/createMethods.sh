@@ -12,18 +12,16 @@
 #                                                                             #
 #*****************************************************************************#
 
+for i in addInput.sh addOutput.sh removeInput.sh removeOutput.sh stop.sh start.sh run.sh proc.sh calculateActivation.sh accessMemoryObjects.sh enable.sh disable.sh; do
+	touch $i
 
-# $1: codelet folder
-# $2: ip:port of the container server
- 
-#docker run -v $1/:/home --network host  --env root_codelet_dir=/home/codelet python_codelet /home/codelet/methods/run.sh $2 &
+done
 
-#docker create --name $3 --env root_codelet_dir=/home/codelet python_codelet
-#docker cp $1 $3:/home
-#docker start $3
-#docker exec -d $3 /home/codelet/methods/run.sh $2 &
+for i in Activation.sh Threshold.sh Inputs.sh Outputs.sh Broadcast.sh Loop.sh TimeStep.sh Name.sh Lock.sh; do
+	touch set$i
+	touch get$i
 
-docker run --name $3 -d -it --network host  --env root_codelet_dir=/home/codelet python_codelet /bin/bash &
-sleep 1
-docker cp $1/. $3:/home
-docker exec -d $3 /home/codelet/methods/run.sh $2 &
+done
+
+
+

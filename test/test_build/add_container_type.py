@@ -21,12 +21,12 @@ def create_connections_file():
 
 
 
-def main(codelet_folder, ip_port_host, port_to_expose, source_codelets):
+def main(codelet_folder, ip_port_hostmode, source_codelets_ips):
     with open(codelet_folder + '/codelet/fields.json', 'r+') as json_data:
         codelet_info = json.load(json_data)
 
         # add all source codelets outputs as the new codelet inputs
-        for source_codelet in source_codelets:
+        for source_codelet in source_codelets_ips:
             ip_port = convert(":", source_codelet)
             source_codelet_info = dct.getCodeletInfo(ip_port[0], ip_port[1])
             new_inputs = []
@@ -39,9 +39,9 @@ def main(codelet_folder, ip_port_host, port_to_expose, source_codelets):
         json.dump(codelet_info, json_data)
         json_data.truncate()
 
-        print(codelet_folder + ' ' + ip_port_host  + ' ' + port_to_expose)
+        print(codelet_folder + ' ' + ip_port_hostmode)
         # calls the add simple container script
-        subprocess.check_call(['./add_simple_container.sh', codelet_folder, ip_port_host, port_to_expose])
+        subprocess.check_call(['./add_simple_container.sh', codelet_folder, ip_port_hostmode])
     
     
 
@@ -52,9 +52,9 @@ def convert(separator, string):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    if len(args) > 3:
+    if len(args) > 2:
         #print(args)
-        main(args[0], args[1], args[2], args[3:])
+        main(args[0], args[1], args[2:])
 	
     else:
         print(len(args))

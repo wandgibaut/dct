@@ -12,18 +12,17 @@
 #                                                                             #
 #*****************************************************************************#
 
+# usage: ./setOutputs.sh <arg>
+# where <arg> is a string with the outputs to set
+# example: ./setOutputs.sh [{"name":....}, {"name":....}]
 
-# $1: codelet folder
-# $2: ip:port of the container server
- 
-#docker run -v $1/:/home --network host  --env root_codelet_dir=/home/codelet python_codelet /home/codelet/methods/run.sh $2 &
+root_codelet_dir=/home/codelet
 
-#docker create --name $3 --env root_codelet_dir=/home/codelet python_codelet
-#docker cp $1 $3:/home
-#docker start $3
-#docker exec -d $3 /home/codelet/methods/run.sh $2 &
+if [ $# -eq 0 ]
+    then
+        echo "No argument supplied!
 
-docker run --name $3 -d -it --network host  --env root_codelet_dir=/home/codelet python_codelet /bin/bash &
-sleep 1
-docker cp $1/. $3:/home
-docker exec -d $3 /home/codelet/methods/run.sh $2 &
+usage: ./setOutputs.sh <arg>"
+    else
+        python3 $root_codelet_dir/methods/changeField.py list outputs "$1"
+fi

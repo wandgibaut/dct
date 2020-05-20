@@ -12,18 +12,35 @@
 #                                                                             #
 #*****************************************************************************#
 
+# Returns the codelet outputs
+# usage: ./getOutput.sh (optional) <arg1> <arg2>
 
-# $1: codelet folder
-# $2: ip:port of the container server
- 
-#docker run -v $1/:/home --network host  --env root_codelet_dir=/home/codelet python_codelet /home/codelet/methods/run.sh $2 &
+root_codelet_dir=/home/codelet
 
-#docker create --name $3 --env root_codelet_dir=/home/codelet python_codelet
-#docker cp $1 $3:/home
-#docker start $3
-#docker exec -d $3 /home/codelet/methods/run.sh $2 &
+if [ $# -eq 0 ]
+then
+    result= python3 $root_codelet_dir/methods/readField.py outputs
 
-docker run --name $3 -d -it --network host  --env root_codelet_dir=/home/codelet python_codelet /bin/bash &
-sleep 1
-docker cp $1/. $3:/home
-docker exec -d $3 /home/codelet/methods/run.sh $2 &
+elif [ $# -eq 1 ]
+then
+    result= python3 $root_codelet_dir/methods/readField.py outputs $1
+
+elif [ $# -eq 2 ]
+then
+    result= python3 $root_codelet_dir/methods/readField.py outputs $1 $2
+
+else
+    echo "Wrong number of arguments!
+
+usage: ./getOutput.sh (optional) <arg1> <arg2>"
+
+fi
+
+
+# use the following commands to retrieve and store the result: 
+# result=$(./getOutputs.sh)
+# echo $result
+
+#list of all
+# name
+# name index

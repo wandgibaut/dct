@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #*****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
@@ -11,19 +9,47 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 #*****************************************************************************#
+import json
+import sys
+
+root_codelet_dir='/home/codelet'
+
+def read_field(field):
+	with open(root_codelet_dir +'/fields.json', 'r') as json_data:
+		jsonData = json.load(json_data)
+		value = jsonData[field]
+	return value
 
 
-# $1: codelet folder
-# $2: ip:port of the container server
- 
-#docker run -v $1/:/home --network host  --env root_codelet_dir=/home/codelet python_codelet /home/codelet/methods/run.sh $2 &
+def read_field_with_name(field, name):
+	with open(root_codelet_dir + '/fields.json', 'r') as json_data:
+		jsonData = json.load(json_data)
+		vector = jsonData[field]
+		for i in vector:
+			for k, v in i.items():
+				if (v == name):
+					return i
+	return "none"
 
-#docker create --name $3 --env root_codelet_dir=/home/codelet python_codelet
-#docker cp $1 $3:/home
-#docker start $3
-#docker exec -d $3 /home/codelet/methods/run.sh $2 &
 
-docker run --name $3 -d -it --network host  --env root_codelet_dir=/home/codelet python_codelet /bin/bash &
-sleep 1
-docker cp $1/. $3:/home
-docker exec -d $3 /home/codelet/methods/run.sh $2 &
+if __name__ == '__main__':
+	args = sys.argv[1:]
+	if len(args) == 1:
+		field = args[0]
+		print(read_field(field))
+	elif len(args) == 2:
+		field = args[0]
+		name = args[1]
+		print(read_field_with_name(field, name))
+
+	#elif len(args) == 3:
+	#	field = args[0]
+	#	name = args[1]
+	#	index = args[2]
+	#	print(read_field_with_name(field, name))
+
+	else:
+		print('Error! Wrong number of arguments!')
+
+	sys.exit()
+

@@ -12,18 +12,32 @@
 #                                                                             #
 #*****************************************************************************#
 
+root_codelet_dir=/home/codelet
 
-# $1: codelet folder
-# $2: ip:port of the container server
- 
-#docker run -v $1/:/home --network host  --env root_codelet_dir=/home/codelet python_codelet /home/codelet/methods/run.sh $2 &
+run=$($root_codelet_dir/methods/getLoop.sh)
 
-#docker create --name $3 --env root_codelet_dir=/home/codelet python_codelet
-#docker cp $1 $3:/home
-#docker start $3
-#docker exec -d $3 /home/codelet/methods/run.sh $2 &
+#echo $n
+#echo $#
+if [ $# -ne 0 ] 
+    then
+        echo "initiating servers!"
+        for var in "$@"
+        do
+            python3 $root_codelet_dir/server.py "$var"  &
+        done
+fi
 
-docker run --name $3 -d -it --network host  --env root_codelet_dir=/home/codelet python_codelet /bin/bash &
-sleep 1
-docker cp $1/. $3:/home
-docker exec -d $3 /home/codelet/methods/run.sh $2 &
+
+
+while $run
+do
+    activation=$($root_codelet_dir/calculateActivation.sh)
+    #memories=$(../accessMemoryObjects.sh)
+    
+    $root_codelet_dir/proc.sh $activation #$memories
+
+    run=$($root_codelet_dir/methods/getLoop.sh)
+    timestep=$($root_codelet_dir/methods/getTimestep.sh)
+    sleep $timestep
+   
+done
