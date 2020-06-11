@@ -18,9 +18,6 @@ import subprocess
 def create_connections_file():
     print('a')
 
-
-
-
 def main(codelet_folder, ip_port_host, port_to_expose, source_codelets):
     with open(codelet_folder + '/codelet/fields.json', 'r+') as json_data:
         codelet_info = json.load(json_data)

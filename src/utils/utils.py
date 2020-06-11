@@ -110,6 +110,9 @@ def add_multiple_scale_consumers(codelet_folder, list_of_codelets_json, number_o
 
         #TODO: continuar
 
+def remove_docker_codelet_from_system(codelet_name):
+    # calls the add simple container script
+    subprocess.check_call(['docker stop', codelet_name])
 
 
 

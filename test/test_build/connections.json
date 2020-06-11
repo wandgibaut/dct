@@ -3,22 +3,22 @@
         {
             "out": "sensory",
             "in": "perceptual",
-            "ip/port": "localhost:6379",
-            "type": "redis",
+            "ip/port": "localhost:9998",
+            "type": "tcp",
             "group": []
         },
         {
             "out": "perceptual",
             "in": "behavioral",
-            "ip/port": "localhost:6379",
-            "type": "redis",
+            "ip/port": "localhost:9997",
+            "type": "tcp",
             "group": []
         },
         {
             "out": "behavioral",
             "in": "motor",
-            "ip/port": "localhost:6379",
-            "type": "redis",
+            "ip/port": "localhost:9996",
+            "type": "tcp",
             "group": ["single_out"]
         }
     ]

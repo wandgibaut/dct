@@ -14,10 +14,10 @@
 
 
 # $1: codelet folder
-# $2: ip/port on the host
-# $3 port inside container to expose
-# $4 ip:port of the container server
+# $2: ip:port of the container server
+# $3: container name 
 
-docker run -v $1/:/home --network host  --env root_codelet_dir=/home/codelet python_codelet /home/codelet/methods/run.sh &
-
-
+docker run --name $3 -d -it --network host  --env root_codelet_dir=/home/codelet python_codelet /bin/bash &
+sleep 1
+docker cp $1/. $3:/home
+docker exec -d $3 /home/codelet/methods/run.sh $2 &
