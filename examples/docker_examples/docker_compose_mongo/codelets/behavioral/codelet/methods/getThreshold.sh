@@ -3,9 +3,9 @@
 #*****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
-# are made available under the terms of the GNU Lesser Public License v3      #
+# are made available under the terms of the MIT License                       #
 # which accompanies this distribution, and is available at                    #
-# http://www.gnu.org/licenses/lgpl.html                                       #
+# https://opensource.org/licenses/MIT                                         #
 #                                                                             #
 # Contributors:                                                               #
 #      W. Gibaut                                                              #
@@ -15,7 +15,6 @@
 # Returns the codelet threshold
 # usage: ./getThreshold.sh
 
-root_codelet_dir=/home/codelet
 
 result= python3 $root_codelet_dir/methods/readField.py threshold
 

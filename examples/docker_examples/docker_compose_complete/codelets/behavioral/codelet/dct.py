@@ -1,9 +1,9 @@
 #*****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
-# are made available under the terms of the GNU Lesser Public License v3      #
+# are made available under the terms of the MIT License                       #
 # which accompanies this distribution, and is available at                    #
-# http://www.gnu.org/licenses/lgpl.html                                       #
+# https://opensource.org/licenses/MIT                                         #
 #                                                                             #
 # Contributors:                                                               #
 #      W. Gibaut                                                              #
@@ -47,6 +47,22 @@ def setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
                     return setTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1], memory_name, field, value)
 
 
+def getMemoryObjectsGroup(root_codelet_dir, memory_name, inputOrOutput, group):
+    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
+        jsonData = json.load(json_data)
+        vector = jsonData[inputOrOutput]
+        for entry in vector:
+            if group in entry['group']:
+                getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput)
+
+
+def setMemoryObjectsGroup(root_codelet_dir, memory_name, field, value, inputOrOutput, group):
+    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
+        jsonData = json.load(json_data)
+        vector = jsonData[inputOrOutput]
+        for entry in vector:
+            if group in entry['group']:
+                setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
 
 def getRedisMemory(host_port, memory_name):
     host = convert(':',host_port)[0]

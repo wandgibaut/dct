@@ -1,9 +1,9 @@
 #*****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
-# are made available under the terms of the GNU Lesser Public License v3      #
+# are made available under the terms of the MIT License                       #
 # which accompanies this distribution, and is available at                    #
-# http://www.gnu.org/licenses/lgpl.html                                       #
+# https://opensource.org/licenses/MIT                                         #
 #                                                                             #
 # Contributors:                                                               #
 #      W. Gibaut                                                              #
@@ -41,7 +41,6 @@ def create_json_memory(connection, name):
 			"name": name, 
 			"ip/port": connection['ip/port'], 
 			"type": connection['type'], 
-			"group": connection['group'],
 			"I": "0", 
 			"eval": 0.0}
 
@@ -57,8 +56,7 @@ def create_connection(connection):
 	
 	conn = {
 		"ip/port": connection['ip/port'], 
-		"type": connection['type'],
-		"group": connection['group'],
+		"type": connection['type'], 
 		"name": name
 	}
 	return conn
