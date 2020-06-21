@@ -47,22 +47,26 @@ def setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
                     return setTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1], memory_name, field, value)
 
 
-def getMemoryObjectsGroup(root_codelet_dir, memory_name, inputOrOutput, group):
+def getMemoryObjectsGroup(root_codelet_dir, inputOrOutput, group):
+    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
+        jsonData = json.load(json_data)
+        vector = jsonData[inputOrOutput]
+        answer = []
+        for entry in vector:
+            if group in entry['group']:
+                answer.append(getMemoryObjects(root_codelet_dir, entry['name'], inputOrOutput))        
+        if answer:
+            return answer
+        return None
+
+
+def setMemoryObjectsGroup(root_codelet_dir, field, value, inputOrOutput, group):
     with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
         jsonData = json.load(json_data)
         vector = jsonData[inputOrOutput]
         for entry in vector:
             if group in entry['group']:
-                getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput)
-
-
-def setMemoryObjectsGroup(root_codelet_dir, memory_name, field, value, inputOrOutput, group):
-    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
-        jsonData = json.load(json_data)
-        vector = jsonData[inputOrOutput]
-        for entry in vector:
-            if group in entry['group']:
-                setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
+                setMemoryObjects(root_codelet_dir, entry['name'], field, value, inputOrOutput)
 
 def getRedisMemory(host_port, memory_name):
     host = convert(':',host_port)[0]

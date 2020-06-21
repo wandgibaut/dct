@@ -9,7 +9,6 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 #*****************************************************************************#
-
 import socketserver
 import sys
 import json
@@ -41,6 +40,7 @@ def create_json_memory(connection, name):
 			"name": name, 
 			"ip/port": connection['ip/port'], 
 			"type": connection['type'], 
+			"group": connection['group'],
 			"I": "0", 
 			"eval": 0.0}
 
@@ -56,7 +56,8 @@ def create_connection(connection):
 	
 	conn = {
 		"ip/port": connection['ip/port'], 
-		"type": connection['type'], 
+		"type": connection['type'],
+		"group": connection['group'],
 		"name": name
 	}
 	return conn
