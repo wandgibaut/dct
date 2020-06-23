@@ -1,0 +1,19 @@
+[
+    {
+        "name": "sensory",
+        "ip/port": "127.0.0.1:9999"
+    },
+    {
+        "name": "perceptual",
+        "ip/port": "127.0.0.1:9998"
+    },
+    {
+        "name": "behavioral",
+        "ip/port": "127.0.0.1:9997"
+    },
+    {
+        "name": "motor",
+        "ip/port": "127.0.0.1:9996"
+    }
+
+]
