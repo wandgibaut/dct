@@ -1,0 +1,28 @@
+version: '3'
+services:
+  sensory:
+    image: "wandgibaut/python_codelet"
+    volumes:
+      - ./codelets/sensory/:/home
+    network_mode: host
+    environment: 
+      - root_codelet_dir=/home/codelet
+    command: /home/codelet/methods/run.sh 127.0.0.1:9998
+
+  perceptual:
+    image: "wandgibaut/python_codelet"
+    volumes:
+      - ./codelets/perceptual/:/home
+    network_mode: host
+    environment: 
+      - root_codelet_dir=/home/codelet
+    command: /home/codelet/methods/run.sh 127.0.0.1:9997
+  
+  
+  
+  touchMemories:
+    image: "wandgibaut/python_codelet"
+    volumes:
+      - ./:/home
+    network_mode: host
+    command: /home/create_memories.sh sensory perceptual
