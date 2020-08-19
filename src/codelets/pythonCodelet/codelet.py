@@ -1,6 +1,4 @@
-#!/bin/bash
-
-#*****************************************************************************#
+# ****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
 # are made available under the terms of the MIT License                       #
@@ -10,18 +8,22 @@
 # Contributors:                                                               #
 #      W. Gibaut                                                              #
 #                                                                             #
-#*****************************************************************************#
-
-# usage: ./setLoop.sh <arg>
-# where <arg> is true or false
-# example: ./setLoop.sh true
+# ****************************************************************************#
+import os
+from dct import PythonCodelet
 
 
-if [ $# -eq 0 ]
-    then
-        echo "No argument supplied!
+class TestCodelet(PythonCodelet):
 
-usage: ./setLoop.sh <arg>"
-    else
-        python3 $root_codelet_dir/methods/changeField.py loop $1
-fi
+    def calculate_activation(self):
+        print("new Activation")
+        return 0.0
+
+    def proc(self, activation):
+        print("new Proc")
+
+
+if __name__ == '__main__':
+    print(os.getenv('ROOT_CODELET_DIR'))
+    codelet = TestCodelet(name='defaultCodelet')
+    codelet.run()
