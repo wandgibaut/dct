@@ -13,10 +13,6 @@
 #*****************************************************************************#
 
 
-run=$($root_codelet_dir/methods/getLoop.sh)
-
-#echo $n
-#echo $#
 if [ $# -ne 0 ] 
     then
         echo "initiating servers!"
@@ -28,15 +24,7 @@ fi
 
 
 
-while $run
-do
-    activation=$($root_codelet_dir/calculateActivation.sh)
-    #memories=$(../accessMemoryObjects.sh)
     
-    $root_codelet_dir/proc.sh $activation #$memories
+python3 $root_codelet_dir/proc.py
 
-    run=$($root_codelet_dir/methods/getLoop.sh)
-    timestep=$($root_codelet_dir/methods/getTimestep.sh)
-    sleep $timestep
    
-done

@@ -1,0 +1,11 @@
+{
+    "connections": [
+        {
+            "out": "none_1",
+            "in": "none_2",
+            "ip/port": "localhost:0000",
+            "type": "none",
+            "group": []
+        }
+    ]
+}

@@ -47,22 +47,28 @@ def setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
                     return setTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1], memory_name, field, value)
 
 
-def getMemoryObjectsGroup(root_codelet_dir, memory_name, inputOrOutput, group):
+def getMemoryObjectsGroup(root_codelet_dir, inputOrOutput, group):
+    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
+        jsonData = json.load(json_data)
+        #print(jsonData)
+        vector = jsonData[inputOrOutput]
+        answer = []
+        for entry in vector:
+            if group in entry['group']:
+                answer.append(getMemoryObjects(root_codelet_dir, entry['name'], inputOrOutput))
+                
+        if answer:
+            return answer
+
+        return None
+
+def setMemoryObjectsGroup(root_codelet_dir, field, value, inputOrOutput, group):
     with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
         jsonData = json.load(json_data)
         vector = jsonData[inputOrOutput]
         for entry in vector:
             if group in entry['group']:
-                getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput)
-
-
-def setMemoryObjectsGroup(root_codelet_dir, memory_name, field, value, inputOrOutput, group):
-    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
-        jsonData = json.load(json_data)
-        vector = jsonData[inputOrOutput]
-        for entry in vector:
-            if group in entry['group']:
-                setMemoryObjects(root_codelet_dir, memory_name, field, value, inputOrOutput)
+                setMemoryObjects(root_codelet_dir, entry['name'], field, value, inputOrOutput)
 
 def getRedisMemory(host_port, memory_name):
     host = convert(':',host_port)[0]
@@ -112,6 +118,29 @@ def setTCPMemory(host, port, memory_name, field, value):
         # Receive data from the server and shut down
         received = str(sock.recv(1024), "utf-8")
         return received
+
+
+def add_memory_to_group(root_codelet_dir, memory_name, newGroup, inputOrOutput):
+    memory_group = getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput)['group']
+    memory_group.append(newGroup)
+    setMemoryObjects(root_codelet_dir, memory_name, 'group', memory_group, inputOrOutput)
+
+
+def getCodeletInfo(host, port):
+    data = 'info_'
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        # Connect to server and send data
+        sock.connect((host,int(port)))
+        sock.sendall(bytes(data + "\n", "utf-8"))
+        # Receive data from the server and shut down
+        received = str(sock.recv(1024), "utf-8")
+        print(received)
+        try:
+            answer = json.loads(received)
+        except:
+            answer = []
+            raise Exception
+        return answer
 
 
 def convert(separator, string): 

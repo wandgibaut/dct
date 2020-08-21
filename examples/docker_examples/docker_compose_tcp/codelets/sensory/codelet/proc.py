@@ -11,36 +11,39 @@
 #*****************************************************************************#
 import json
 import sys
-import redis
-from pymongo import MongoClient
 import socket
+import os
 import dct
 
-root_codelet_dir='/home/codelet'
+class SensoryCodelet(dct.PythonCodelet):
 
-def main(activation):
-	mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-memory', 'outputs')
-	mem_2 = dct.getMemoryObjects(root_codelet_dir, 'perceptual-2-memory', 'outputs')
-	print(mem)
-	if mem['I'] == None:
-		mem['I'] = -1
-    
-	I = int(mem['I'])
-	I +=1
-	dct.setMemoryObjects(root_codelet_dir, 'perceptual-memory', 'I', str(I), 'outputs')
-	dct.setMemoryObjects(root_codelet_dir, 'perceptual-2-memory', 'I', str(I), 'outputs')
+    def calculate_activation(self):
+        print("new Activation")
+        return 0.0
 
+	def get_luminosity(room, HOST, PORT):
+		data = 'get_' + room + '_luminosity'
+		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+			# Connect to server and send data
+			sock.connect((HOST, PORT))
+			sock.sendall(bytes(data + "\n", "utf-8"))
+
+			# Receive data from the server and shut down
+			received = str(sock.recv(1024), "utf-8")
+			return received
+		#print('a')
+
+    def proc(self, activation):
+        temp = get_luminosity('living-room', 'localhost', 9999)
+		#print(temp)
+		I = float(temp)
+		dct.setMemoryObjects(root_codelet_dir, 'perceptual-LR-luminosity-LR-memory', 'I', str(I), 'outputs')
+		dct.setMemoryObjects(root_codelet_dir, 'energy-LR-luminosity-LR-memory', 'I', str(I), 'outputs')
+		dct.setMemoryObjects(root_codelet_dir, 'comfort-LR-luminosity-LR-memory', 'I', str(I), 'outputs')
 
 
 
 if __name__ == '__main__':
-	args = sys.argv[1:]
-	if len(args) == 1:
-		activation = args[0]
-		main(activation)
-	
-	else:
-		print(len(args))
-		print('Error! Wrong number of arguments!')
-		sys.exit()
-
+    print(os.getenv('ROOT_CODELET_DIR'))
+    codelet = TestCodelet(name='defaultCodelet')
+    codelet.run()

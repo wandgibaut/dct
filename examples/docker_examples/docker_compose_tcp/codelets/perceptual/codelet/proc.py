@@ -21,15 +21,30 @@ root_codelet_dir='/home/codelet'
 
 
 def main(activation):
-	mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-memory', 'inputs')
-	mem_2 = dct.getMemoryObjects(root_codelet_dir, 'perceptual-2-memory', 'inputs')
-	
-	I = mem['I']
-	print(I + ' and ' + mem_2['I'])
+	#mem = dct.getMemoryObjects(root_codelet_dir, 'perceptual-LR-thermo-LR-memory', 'inputs')
+	#mem_2 = dct.getMemoryObjects(root_codelet_dir, 'perceptual-LR-luminosity-LR-memory', 'inputs')
+	#mem_3 = dct.getMemoryObjects(root_codelet_dir, 'perceptual-LR-presence-LR-memory', 'inputs')
+	all_mem = dct.getMemoryObjectsGroup(root_codelet_dir, 'inputs', 'sensors')
+	container = dct.getMemoryObjects(root_codelet_dir, 'perceptual-LR-input-container-memory', 'inputs')
 
-	#dct.setMemoryObjects(root_codelet_dir, 'behavioral-input-memories/perceptual-memory', 'I', I, 'outputs')
+	I = ''
+	for mem in all_mem:
+		if I == '':
+			I = mem['I']
+		else:
+			I = I + '-' + mem['I']
+
+	#print(I)
+	print(container)
+
+	#dct.setMemoryObjects(root_codelet_dir, 'perceptual-LR-input-container-memory', 'test-mem-3', '10', 'inputs')
+
+	dct.setMemoryObjects(root_codelet_dir, 'AC-control-LR-perceptual-LR-memory', 'I', I, 'outputs')
+	dct.setMemoryObjects(root_codelet_dir, 'light-control-LR-perceptual-LR-memory', 'I', I, 'outputs')
 
     
+ 
+
 
 if __name__ == '__main__':
 	args = sys.argv[1:]
