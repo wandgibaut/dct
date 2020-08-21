@@ -9,21 +9,40 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 # ****************************************************************************#
+import json
+import sys
+import socket
 import os
-from dct import PythonCodelet
+import dct
 
 
-class TestCodelet(PythonCodelet):
+class SensoryCodelet(dct.PythonCodelet):
 
     def calculate_activation(self):
-        print("new Activation")
+        # print("new Activation")
         return 0.0
 
+    def get_luminosity(self, room, HOST, PORT):
+        data = 'get_' + room + '_luminosity'
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            # Connect to server and send data
+            sock.connect((HOST, PORT))
+            sock.sendall(bytes(data + "\n", "utf-8"))
+
+            # Receive data from the server and shut down
+            received = str(sock.recv(1024), "utf-8")
+            return received
+
     def proc(self, activation):
-        print("new Proc")
+        temp = self.get_luminosity('living-room', 'localhost', 9999)
+        # print(temp)
+        I = float(temp)
+        dct.setMemoryObjects(self.root_codelet_dir, 'perceptual-LR-luminosity-LR-memory', 'I', str(I), 'outputs')
+        dct.setMemoryObjects(self.root_codelet_dir, 'energy-LR-luminosity-LR-memory', 'I', str(I), 'outputs')
+        dct.setMemoryObjects(self.root_codelet_dir, 'comfort-LR-luminosity-LR-memory', 'I', str(I), 'outputs')
 
 
 if __name__ == '__main__':
     print(os.getenv('ROOT_CODELET_DIR'))
-    codelet = TestCodelet(name='defaultCodelet')
+    codelet = TestCodelet(name='sensoryCodelet')
     codelet.run()
