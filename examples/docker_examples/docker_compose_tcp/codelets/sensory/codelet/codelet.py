@@ -29,7 +29,6 @@ class SensoryCodelet(dct.PythonCodelet):
         dct.set_memory_objects(self.root_codelet_dir, 'perceptual-sensory-memory', 'I', str(I), 'outputs')
 
 
-
 if __name__ == '__main__':
     print(os.getenv('ROOT_CODELET_DIR'))
     codelet = SensoryCodelet(name='sensoryCodelet')
