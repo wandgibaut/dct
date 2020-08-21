@@ -18,13 +18,13 @@ if [ $# -ne 0 ]
         echo "initiating servers!"
         for var in "$@"
         do
-            python3 $root_codelet_dir/server.py "$var"  &
+            python3 $ROOT_CODELET_DIR/server.py "$var"  &
         done
 fi
 
 
 
     
-python3 $root_codelet_dir/proc.py
+python3 $ROOT_CODELET_DIR/codelet.py
 
    

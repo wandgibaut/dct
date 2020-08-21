@@ -89,11 +89,11 @@ class PythonCodelet:
         return li
 
     def run(self):
-        while self.read_field('enable'):
-            while not self.read_field('lock'):
+        while self.read_field('enable') == 'true':
+            while self.read_field('lock') == 'false':
                 activation = self.calculate_activation()
                 self.proc(activation)
-                time.sleep(self.read_field('timestep'))
+                time.sleep(float(self.read_field('timestep')))
 
         sys.exit()
 
@@ -116,12 +116,12 @@ def get_memory_objects(root_codelet_dir, memory_name, inputOrOutput):
         for entry in vector:
             if entry['name'] == memory_name:
                 if entry['type'] == 'mongo':
-                    return getMongoMemory(entry['ip/port'], memory_name)
+                    return get_mongo_memory(entry['ip/port'], memory_name)
                 elif entry['type'] == 'redis':
-                    return getRedisMemory(entry['ip/port'], convert("/", memory_name)[1])
+                    return get_redis_memory(entry['ip/port'], convert("/", memory_name)[1])
                 else:
                     # print(convert(":", entry['ip/port'])[0])
-                    return getTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1],
+                    return get_tcp_memory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1],
                                         memory_name)
         return None
 
@@ -133,11 +133,11 @@ def set_memory_objects(root_codelet_dir, memory_name, field, value, inputOrOutpu
         for entry in vector:
             if entry['name'] == memory_name:
                 if entry['type'] == 'mongo':
-                    return setMongoMemory(entry['ip/port'], memory_name, field, value)
+                    return set_mongo_memory(entry['ip/port'], memory_name, field, value)
                 elif entry['type'] == 'redis':
-                    return setRedisMemory(entry['ip/port'], convert("/", memory_name)[1], field, value)
+                    return set_redis_memory(entry['ip/port'], convert("/", memory_name)[1], field, value)
                 else:
-                    return setTCPMemory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1],
+                    return set_tcp_memory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1],
                                         memory_name, field, value)
 
 
@@ -148,7 +148,7 @@ def get_memory_objects_group(root_codelet_dir, inputOrOutput, group):
         answer = []
         for entry in vector:
             if group in entry['group']:
-                answer.append(getMemoryObjects(root_codelet_dir, entry['name'], inputOrOutput))
+                answer.append(get_memory_objects(root_codelet_dir, entry['name'], inputOrOutput))
         if answer:
             return answer
         return None
@@ -160,7 +160,7 @@ def set_memory_objects_group(root_codelet_dir, field, value, inputOrOutput, grou
         vector = jsonData[inputOrOutput]
         for entry in vector:
             if group in entry['group']:
-                setMemoryObjects(root_codelet_dir, entry['name'], field, value, inputOrOutput)
+                set_memory_objects(root_codelet_dir, entry['name'], field, value, inputOrOutput)
 
 
 def get_redis_memory(host_port, memory_name):
@@ -216,9 +216,9 @@ def set_tcp_memory(host, port, memory_name, field, value):
 
 
 def add_memory_to_group(root_codelet_dir, memory_name, newGroup, inputOrOutput):
-    memory_group = getMemoryObjects(root_codelet_dir, memory_name, inputOrOutput)['group']
+    memory_group = get_memory_objects(root_codelet_dir, memory_name, inputOrOutput)['group']
     memory_group.append(newGroup)
-    setMemoryObjects(root_codelet_dir, memory_name, 'group', memory_group, inputOrOutput)
+    set_memory_objects(root_codelet_dir, memory_name, 'group', memory_group, inputOrOutput)
 
 
 def get_codelet_info(host, port):

@@ -47,18 +47,17 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         self.data = self.request.recv(1024).strip()
         list_data = self.convert(self.data.decode())
-        print('Here!')
         if list_data[0] == 'get':
-            self.request.sendall(bytes(self.getMemory(list_data[1]), "utf-8"))
+            self.request.sendall(bytes(self.get_memory(list_data[1]), "utf-8"))
             
         if list_data[0] == 'set':
-            self.setMemory(list_data[1], list_data[2], list_data[3])
+            self.set_memory(list_data[1], list_data[2], list_data[3])
             self.request.sendall(bytes('success!', "utf-8"))
 
         if list_data[0] == 'info':
             print('Ok!')
             self.request.sendall(bytes(self.get_codelet_info(), "utf-8"))
-            
+
 
 def split(string): 
     li = list(string.split(":")) 

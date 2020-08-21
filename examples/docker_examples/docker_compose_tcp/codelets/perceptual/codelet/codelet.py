@@ -15,23 +15,20 @@ import threading
 import dct
 
 
-class SensoryCodelet(dct.PythonCodelet):
+class PerceptualCodelet(dct.PythonCodelet):
 
     def calculate_activation(self):
         # print("new Activation")
         return 0.0
 
     def proc(self, activation):
-        mem = dct.get_memory_objects(self.root_codelet_dir, 'perceptual-sensory-memory', 'outputs')
-        if mem['I'] is None:
-            mem['I'] = -1
-        I = int(mem['I']) + 1
-        dct.set_memory_objects(self.root_codelet_dir, 'perceptual-sensory-memory', 'I', str(I), 'outputs')
-
+        mem = dct.get_memory_objects(self.root_codelet_dir, 'perceptual-sensory-memory', 'inputs')
+        # print(mem['I'])
+        dct.set_memory_objects(self.root_codelet_dir, 'behavioral-perceptual-memory', 'I', mem['I'], 'outputs')
 
 
 if __name__ == '__main__':
     print(os.getenv('ROOT_CODELET_DIR'))
-    codelet = SensoryCodelet(name='sensoryCodelet')
+    codelet = PerceptualCodelet(name='perceptualCodelet')
     threading.Thread(target=codelet.run).start()
-    #codelet.run()
+    # codelet.run()
