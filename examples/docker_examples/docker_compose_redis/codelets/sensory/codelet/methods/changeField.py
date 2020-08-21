@@ -14,7 +14,8 @@ import json
 import sys
 import os
 
-root_codelet_dir= os.getenv('root_codelet_dir')
+root_codelet_dir = os.getenv('ROOT_CODELET_DIR')
+
 
 def change_field(field, value):
 	with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
@@ -25,7 +26,8 @@ def change_field(field, value):
 		json_data.seek(0) #rewind
 		json.dump(jsonData, json_data)
 		json_data.truncate()
-	
+
+
 def add_entry(field, data):
 	with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
 		jsonData = json.load(json_data)
@@ -38,6 +40,7 @@ def add_entry(field, data):
 		json_data.seek(0) #rewind
 		json.dump(jsonData, json_data)
 		json_data.truncate()
+
 
 def remove_entry(field, name):
 	with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
@@ -58,7 +61,7 @@ def remove_entry(field, name):
 		json_data.truncate()
 
 		
-def set_field_list(field,dataList):
+def set_field_list(field, dataList):
 	jsonList = []
 	for dataString in dataList:
 		jsonList.append(json.loads(dataString))
@@ -72,9 +75,10 @@ def set_field_list(field,dataList):
 		json.dump(jsonData, json_data)
 		json_data.truncate()
 
-def convert(string): 
-    li = list(string.split(";")) 
-    return li 
+
+def convert(string):
+	li = list(string.split(";"))
+	return li
 
 
 if __name__ == '__main__':
