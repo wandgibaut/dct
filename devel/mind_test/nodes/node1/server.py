@@ -11,13 +11,15 @@
 # ****************************************************************************#
 
 import socketserver
+import socket
 import sys
 import json
 import threading
 import os
 import glob
-
+import configparser
 root_node_dir = os.getenv('ROOT_NODE_DIR')
+# root_node_dir = '/home/wander/OtherProjects/dct_pack/dct/devel/mind_test/nodes/node1'
 
 
 class CodeletTCPHandler(socketserver.BaseRequestHandler):
@@ -57,6 +59,77 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
         li = list(string.split("_"))
         return li
 
+    def read_param(self):
+        config = configparser.ConfigParser()
+        config.read(root_node_dir + '/param.ini', encoding='utf-8')
+        return config
+
+    def set_param(self, section, field, value):
+        config = self.read_param()
+        config.set(section, field, value)
+        with open(root_node_dir + '/param.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def remove_param(self, section, field):
+        config = self.read_param()
+        config.remove_option(section, field)
+        with open(root_node_dir + '/param.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def kill_codelet(self, codelet_name):
+        self.remove_param('active_codelets', codelet_name)
+        return 0
+
+    def run_codelet(self, codelet_name):
+        config = self.read_param()
+        if config.has_option('internal_codelets', codelet_name):
+            self.set_param('active_codelets', codelet_name, codelet_name)
+        return 0
+
+    def config_death(self):
+        config = self.read_param()
+        self.death_threshold = int(config.get('signals', 'death_threshold'))
+        self.death_votes = 0
+
+    def vote_kill(self, ip_port):
+        data = 'vote_' + ip_port
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            # Connect to server and send data
+            splited = split(ip_port)
+            sock.connect((splited[0], int(splited[1])))
+            sock.sendall(bytes(data + "\n", "utf-8"))
+            # Receive data from the server and shut down
+            received = str(sock.recv(1024), "utf-8")
+            return received  # a string confirming the vote
+
+    def listen_death_democracy(self, node_ip):
+        if not hasattr(self, 'death_threshold'):
+            self.config_death()
+
+        config = self.read_param()
+        for i in range(self.death_threshold):
+            if config.has_option('signals', 'voter_' + str(i)):
+                if config.get('signals', 'voter_' + str(i)) == 'node_ip':
+                    return 'vote already listened!'
+
+        self.set_param('signals', 'voter_' + str(self.death_votes), node_ip)
+        self.death_votes += 1
+
+        if self.death_votes >= self.death_threshold:
+            self.set_param('signals', 'suicide_note', 'true')
+            return 'node will die!'
+
+        return 'vote computed!'
+
+    def listen_death_authority(self):
+        self.set_param('signals', 'suicide_note', 'true')
+        return 0
+
+    # TODO: implement this method
+    def listen_internal_codelet(self):
+        return 0
+
+    # TODO: implement ifs
     def handle(self):
         # self.request is the TCP socket connected to the client
         self.data = self.request.recv(1024).strip()
@@ -72,6 +145,26 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
             print('Ok!')
             self.request.sendall(bytes(self.get_codelet_info(list_data[1]), "utf-8"))
 
+        if list_data[0] == 'kill-codelet':
+            self.kill_codelet(list_data[1])
+            self.request.sendall(bytes('codelet killed!', "utf-8"))
+
+        if list_data[0] == 'run-codelet':
+            self.run_codelet(list_data[1])
+            self.request.sendall(bytes('codelet will run soon!', "utf-8"))
+
+        if list_data[0] == 'vote-kill':
+            self.vote_kill(list_data[1])
+            # self.request.sendall(bytes('codelet killed!', "utf-8"))
+
+        if list_data[0] == 'die':
+            self.listen_death_democracy(list_data[1])
+            self.request.sendall(bytes('vote computed!', "utf-8"))
+
+        if list_data[0] == 'die-now':
+            self.listen_death_authority()
+            self.request.sendall(bytes('will die soon! Good bye... :(', "utf-8"))
+
 
 def split(string): 
     li = list(string.split(":")) 
@@ -83,7 +176,6 @@ if __name__ == "__main__":
     HOST = split(args[0])[0]
     PORT = int(split(args[0])[1])
     server = socketserver.TCPServer((HOST, PORT), CodeletTCPHandler)
-
     # Activate the server; this will keep running until you
     # interrupt the program with Ctrl-C
     threading.Thread(target=server.serve_forever).start()
