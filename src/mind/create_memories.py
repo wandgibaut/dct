@@ -1,4 +1,4 @@
-#*****************************************************************************#
+# ****************************************************************************#
 # Copyright (c) 2020  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
 # are made available under the terms of the MIT License                       #
@@ -8,10 +8,11 @@
 # Contributors:                                                               #
 #      W. Gibaut                                                              #
 #                                                                             #
-#*****************************************************************************#
+# ****************************************************************************#
 
 import json
-import os, sys
+import sys
+import glob
 from pymongo import MongoClient
 import redis
 
@@ -26,7 +27,11 @@ import redis
 
 def mount(list_of_codelets):
     for codelet in list_of_codelets:
-        with open('/home/codelets/'+ codelet + '/codelet/fields.json', 'r+') as json_data:  # abrir o fields
+        field_file = None
+        for filename in glob.iglob('./nodes/**', recursive=True):
+            if filename.__contains__(codelet + '/codelet/fields'):
+                field_file = filename
+        with open(field_file, 'r+') as json_data:  # abrir o fields
             jsonData = json.load(json_data)
             inputs = jsonData['inputs']
             outputs = jsonData['outputs']
@@ -65,6 +70,7 @@ def mount(list_of_codelets):
 def convert(string): 
     li = list(string.split("/")) 
     return li 
+
 
 def convert_alt(string): 
     li = list(string.split(":")) 
