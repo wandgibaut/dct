@@ -1,46 +1,19 @@
 version: '3'
 services:
-  sensory:
+  node1:
     image: "wandgibaut/python_codelet"
     volumes:
-      - ./codelets/sensory/:/home
+      - ./nodes/node1/:/home/node
     network_mode: host
     environment:
-      - ROOT_CODELET_DIR=/home/codelet
-    command: /home/codelet/methods/run.sh localhost:9998
+      - ROOT_NODE_DIR=/home/node
+    command: /home/node/nodeMaster.sh 127.0.0.1:9998
 
-  perceptual:
+  node2:
     image: "wandgibaut/python_codelet"
     volumes:
-      - ./codelets/perceptual/:/home
+      - ./nodes/node2/:/home/node
     network_mode: host
     environment:
-      - ROOT_CODELET_DIR=/home/codelet
-    command: /home/codelet/methods/run.sh 127.0.0.1:9997
-
-  behavioral:
-    image: "wandgibaut/python_codelet"
-    volumes:
-      - ./codelets/behavioral/:/home
-    network_mode: host
-    environment:
-      - ROOT_CODELET_DIR=/home/codelet
-    command: /home/codelet/methods/run.sh 127.0.0.1:9996
-
-  motor:
-    image: "wandgibaut/python_codelet"
-    volumes:
-      - ./codelets/motor/:/home
-    network_mode: host
-    environment:
-      - ROOT_CODELET_DIR=/home/codelet
-    command: /home/codelet/methods/run.sh 127.0.0.1:9995
-  
-  #touchMemories:
-  #  image: "wandgibaut/python_codelet"
-  #  volumes:
-  #    - ./:/home
-  #  network_mode: host
-  #  environment:
-  #    - ROOT_CODELET_DIR=/home/codelet
-  #  command: /home/create_memories.sh
+      - ROOT_NODE_DIR=/home/node
+    command: /home/node/nodeMaster.sh 127.0.0.1:9997

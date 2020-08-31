@@ -3,8 +3,8 @@
         {
             "out": "sensory",
             "in": "perceptual",
-            "ip/port": "localhost:6379",
-            "type": "redis",
+            "ip/port": "/home/node/codelets/sensory/memories",
+            "type": "local",
             "group": []
         },
         {
@@ -16,8 +16,8 @@
         },{
             "out": "behavioral",
             "in": "motor",
-            "ip/port": "localhost:6379",
-            "type": "redis",
+            "ip/port": "/home/node/codelets/behavioral/memories",
+            "type": "local",
             "group": []
         }
     ]
