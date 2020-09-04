@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 def add_codelet_to_system(codelet_folder, ip_port_hostmode, new_codelet_name, input_codelets_ips=None,
                           input_memories=None, output_codelets_ips=None, output_memories=None):
-    with open(codelet_folder + '/codelet/fields.json', 'r+') as json_data:
+    with open(codelet_folder + '/fields.json', 'r+') as json_data:
         codelet_info = json.load(json_data)
 
         print('test stops here')
@@ -112,8 +112,8 @@ def add_multiple_scale_consumers(codelet_folder, list_of_codelets_json, number_o
             ips= list(map(lambda datum: datum['ip/port'], codelets_info))
             list_of_codelets = []
             for ip in ips:
-                list_of_codelets.append(convert(":",ip))
-            matrix = np.array(createMatrix(getAllCodeletsInfos(list_of_codelets)))
+                list_of_codelets.append(convert(":", ip))
+            matrix = np.array(create_matrix(get_all_codelets_infos(list_of_codelets)))
             number_of_connections = matrix.sum(axis=1, dtype='float')
             total_number_of_connections = matrix.sum(dtype='float')
 
@@ -158,7 +158,7 @@ def get_codelet_info(host, port):
 def get_all_codelets_infos(list_of_codelets):
     answer = []
     for codelet in list_of_codelets:
-        answer.append(getCodeletInfo(codelet[0], codelet[1]))
+        answer.append(get_codelet_info(codelet[0], codelet[1]))
     
     return answer
 
@@ -190,7 +190,7 @@ def create_matrix(list_of_codelets_infos):
 
 
 def draw_network(list_of_codelets, graph_name):
-    matrix = createMatrix(getAllCodeletsInfos(list_of_codelets))
+    matrix = create_matrix(get_all_codelets_infos(list_of_codelets))
 
     print(matrix)
     g = nx.from_numpy_matrix(np.array(matrix))

@@ -20,7 +20,10 @@ from pymongo import MongoClient
 
 
 class PythonCodelet:
-    def __init__(self, name=None, root_codelet_dir=os.getenv('ROOT_CODELET_DIR')):
+    def __init__(self, name=None, root_codelet_dir=None):
+        if root_codelet_dir is None:
+            os.chdir(os.path.dirname(__file__))
+            root_codelet_dir = os.getcwd()
         self.root_codelet_dir = root_codelet_dir
         self.name = name
 
@@ -34,7 +37,7 @@ class PythonCodelet:
         with open(self.root_codelet_dir + '/fields.json', 'r+') as json_data:
             jsonData = json.load(json_data)
             jsonData[field] = value
-            print(jsonData[field])
+            # print(jsonData[field])
 
             json_data.seek(0)  # rewind
             json.dump(jsonData, json_data)
@@ -63,7 +66,7 @@ class PythonCodelet:
                         return i
 
             jsonData[field] = vector
-            print(jsonData[field])
+            # print(jsonData[field])
 
             json_data.seek(0)  # rewind
             json.dump(jsonData, json_data)
@@ -77,7 +80,7 @@ class PythonCodelet:
         with open(self.root_codelet_dir + '/fields.json', 'r+') as json_data:
             jsonData = json.load(json_data)
             jsonData[field] = jsonList
-            print(jsonData[field])
+            # print(jsonData[field])
 
             json_data.seek(0)  # rewind
             json.dump(jsonData, json_data)
@@ -119,10 +122,12 @@ def get_memory_objects(root_codelet_dir, memory_name, inputOrOutput):
                     return get_mongo_memory(entry['ip/port'], memory_name)
                 elif entry['type'] == 'redis':
                     return get_redis_memory(entry['ip/port'], convert("/", memory_name)[1])
-                else:
-                    # print(convert(":", entry['ip/port'])[0])
+                elif entry['type'] == 'tcp':
                     return get_tcp_memory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1],
-                                        memory_name)
+                                          memory_name)
+                else:
+                    return get_local_memory(entry['ip/port'], entry['name'])
+
         return None
 
 
@@ -136,9 +141,11 @@ def set_memory_objects(root_codelet_dir, memory_name, field, value, inputOrOutpu
                     return set_mongo_memory(entry['ip/port'], memory_name, field, value)
                 elif entry['type'] == 'redis':
                     return set_redis_memory(entry['ip/port'], convert("/", memory_name)[1], field, value)
-                else:
+                elif entry['type'] == 'tcp':
                     return set_tcp_memory(convert(":", entry['ip/port'])[0], convert(":", entry['ip/port'])[1],
-                                        memory_name, field, value)
+                                          memory_name, field, value)
+                else:  # local
+                    return set_local_memory(entry['ip/port'], memory_name, field, value)
 
 
 def get_memory_objects_group(root_codelet_dir, inputOrOutput, group):
@@ -213,6 +220,22 @@ def set_tcp_memory(host, port, memory_name, field, value):
         # Receive data from the server and shut down
         received = str(sock.recv(1024), "utf-8")
         return received
+
+
+def get_local_memory(path, memory_name):
+    with open(path + '/' + memory_name + '.json', 'r+') as json_data:
+        return json.load(json_data)
+
+
+def set_local_memory(path, memory_name, field, value):
+    with open(path + '/' + memory_name + '.json', 'r+') as json_data:
+        jsonData = json.load(json_data)
+        jsonData[field] = value
+        # print(jsonData[field])
+
+        json_data.seek(0)  # rewind
+        json.dump(jsonData, json_data)
+        json_data.truncate()
 
 
 def add_memory_to_group(root_codelet_dir, memory_name, newGroup, inputOrOutput):
