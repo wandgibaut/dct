@@ -54,6 +54,28 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
             fields = json.dumps(json.load(json_data))
             return fields
 
+    def get_node_info(self):
+        print('a')
+        number_of_codelets = 0
+        input_ips = []
+        output_ips = []
+        for filename in glob.iglob(root_node_dir + '/**', recursive=True):
+            if filename.__contains__('fields.json'):
+                number_of_codelets += 1
+                with open(filename, 'r+') as json_data:
+                    fields = json.load(json_data)
+                    add_inputs = [item['ip/port'] for item in fields['inputs']]
+                    add_outputs = [item['ip/port'] for item in fields['outputs']]
+                    for entry in add_inputs:
+                        if entry not in input_ips:
+                            input_ips.append(entry)
+                    for entry in add_outputs:
+                        if entry not in output_ips:
+                            output_ips.append(entry)
+
+        answer = {'number_of_codelets': number_of_codelets, 'input_ips': input_ips, 'output_ips': output_ips}
+        return json.dumps(answer)
+
     @staticmethod
     def convert(string):
         li = list(string.split("_"))
@@ -143,7 +165,10 @@ class CodeletTCPHandler(socketserver.BaseRequestHandler):
 
         if list_data[0] == 'info':
             print('Ok!')
-            self.request.sendall(bytes(self.get_codelet_info(list_data[1]), "utf-8"))
+            if len(list_data) == 2:
+                self.request.sendall(bytes(self.get_codelet_info(list_data[1]), "utf-8"))
+            else:
+                self.request.sendall(bytes(self.get_node_info(), "utf-8"))
 
         if list_data[0] == 'kill-codelet':
             self.kill_codelet(list_data[1])

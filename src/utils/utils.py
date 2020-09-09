@@ -10,6 +10,7 @@
 #                                                                             #
 # *****************************************************************************#
 import sys
+import os
 import getopt
 import dct
 import json
@@ -21,99 +22,95 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-def add_codelet_to_system(codelet_folder, ip_port_hostmode, new_codelet_name, input_codelets_ips=None,
-                          input_memories=None, output_codelets_ips=None, output_memories=None):
-    with open(codelet_folder + '/codelet/fields.json', 'r+') as json_data:
-        codelet_info = json.load(json_data)
-
-        print('test stops here')
-        # add all source codelets outputs as the new codelet inputs
-        if input_codelets_ips is not None:
+# 'behavior sensory-memory@tcp@127.0.0.1:9998,sensory-memory@local@127.0.0.1:9998 motor-memory@aaaaa; .... '
+def add_node_to_system(node_folder, ip_port_hostmode, new_node_name, codelets_input_output):
+    codelets_to_add = convert("; ", codelets_input_output)
+    for codelet in codelets_to_add:
+        name_input_output = convert(' ', codelet)
+        with open(node_folder + '/codelets/' + name_input_output[0] + '/fields.json', 'r+') as json_data:
+            codelet_info = json.load(json_data)
             new_inputs = []
-            for input_codelet in input_codelets_ips:
-                ip_port = convert(":", input_codelet)
-                print(input_codelets_ips)
-                input_codelet_info = dct.get_codelet_info(ip_port[0], ip_port[1])
-
-                for mem in input_codelet_info['outputs']:
-                    if mem not in codelet_info['inputs'] and mem['name'] in input_memories:
-                        new_inputs.append(mem)
+            if name_input_output[1] != 'none':
+                for input in convert(',', name_input_output[1]):
+                    mem = {"ip/port": convert('@', input)[2], "type": convert('@', input)[1],
+                           "name": convert('@', input)[0]}
+                    new_inputs.append(mem)
 
             codelet_info['inputs'] = new_inputs
 
-        # add all output codelets outputs as the new codelet inputs
-        if output_codelets_ips is not None:
             new_outputs = []
-            for output_codelet in output_codelets_ips:
-                ip_port = convert(":", output_codelet)
-                print(output_codelets_ips)
-                output_codelet_info = dct.get_codelet_info(ip_port[0], ip_port[1])
-
-                for mem in output_codelet_info['outputs']:
-                    if mem not in codelet_info['inputs'] and mem['name'] in output_memories:
-                        new_outputs.append(mem)
+            if name_input_output[2] != 'none':
+                for output in convert(',', name_input_output[2]):
+                    mem = {"ip/port": convert('@', output)[2], "type": convert('@', output)[1],
+                           "name": convert('@', output)[0]}
+                    new_outputs.append(mem)
 
             codelet_info['outputs'] = new_outputs
 
-        # updates the fields.json
-        json_data.seek(0)  # rewind
-        json.dump(codelet_info, json_data)
-        json_data.truncate()
+            # updates the fields.json
+            json_data.seek(0)  # rewind
+            json.dump(codelet_info, json_data)
+            json_data.truncate()
 
-        print(codelet_folder + ' ' + ip_port_hostmode)
-        # calls the add simple container script
-        subprocess.check_call(['./add_simple_container.sh', codelet_folder, ip_port_hostmode, new_codelet_name])
-
-
-def add_random_consumer(codelet_folder, ip_port_hostmode, number_of_feeders, list_of_codelets_json):
-    with open(list_of_codelets_json, 'r+') as json_data:
-        codelets_info = json.load(json_data)
-        ips= list(map(lambda datum: datum['ip/port'], codelets_info))
-        
-        input_codelets_ips = []
-        input_memories = []
-        if number_of_feeders == '-1':
-            input_codelets_ips.extend(random.choices(ips, k=random.randrange(len(codelets_info))))
-        else:
-            input_codelets_ips.extend(random.choices(ips, k=int(number_of_feeders)))
-
-        for ip in input_codelets_ips:
-            ip_port = convert(":", ip)
-            input_memories.extend(dct.get_codelet_info(ip_port[0], ip_port[1]))
-        
-        print(input_codelets_ips)
-        add_codelet_to_system(codelet_folder, ip_port_hostmode, 'random_' + str(random.randint(0,1000)),
-                              input_codelets_ips=input_codelets_ips, input_memories=input_memories)
+    print(node_folder + ' ' + ip_port_hostmode)
+    # calls the add simple container script
+    subprocess.check_call(['./add_simple_container.sh', node_folder, ip_port_hostmode, new_node_name])
 
 
-def add_multiple_random_consumers(codelet_folder, ip_port_hostmode_list_json, number_of_feeders_array,
-                                  list_of_codelets_json, number_of_codelets):
+def add_random_consumer(node_folder, ip_port_hostmode, number_of_feeders, list_of_memories_json):
+    with open(list_of_memories_json, 'r+') as json_data:
+        memories_info = json.load(json_data)
+
+        inputs = ''
+        for codelet in os.listdir(node_folder + '/codelets'):
+            inputs += codelet + ' '
+            if number_of_feeders == '-1':
+                choosen_infos = random.choices(memories_info, k=random.randrange(len(memories_info)))
+            else:
+                choosen_infos = random.choices(memories_info, k=int(number_of_feeders))
+
+            if len(choosen_infos) != 0:
+                for info in choosen_infos:
+                    input_codelet = info['name'] + '@' + info['type'] + '@' + info['ip/port'] + ','
+                    inputs += input_codelet
+                inputs += ' '
+                inputs = inputs.replace(', ', ' none; ')
+            else:
+                inputs += 'none none; '
+
+        inputs += '$'
+        inputs = inputs.replace('; $', '')
+
+        print(inputs)
+        add_node_to_system(node_folder, ip_port_hostmode, 'random_' + str(random.randint(0, 1000)), inputs)
+
+
+def add_multiple_random_consumers(node_folder, ip_port_hostmode_list_json, number_of_feeders_array,
+                                  list_of_memories_json, number_of_nodes):
     with open(ip_port_hostmode_list_json, 'r+') as json_list:
         ip_port_hostmode_list = json.load(json_list)
-        if number_of_feeders_array == '-1':
-            for i in range(number_of_codelets):
-                with open(list_of_codelets_json, 'r+') as json_data:
-                    codelets_info = json.load(json_data)
-                    for i in range(int(number_of_codelets)):
-                        add_random_consumer(codelet_folder, ip_port_hostmode_list[i], -1, codelets_info)
+        if number_of_feeders_array[0] == '-1':
+            for i in range(int(number_of_nodes)):
+                add_random_consumer(node_folder, ip_port_hostmode_list[i], -1, list_of_memories_json)
         else:
-            for i in range(number_of_codelets):
-                for i in range(int(number_of_codelets)):
-                    add_random_consumer(codelet_folder, ip_port_hostmode_list[i], number_of_feeders_array[i],
-                                        list_of_codelets_json)
+            for i in range(int(number_of_nodes)):
+                add_random_consumer(node_folder, ip_port_hostmode_list[i], number_of_feeders_array[i],
+                                    list_of_memories_json)
 
 
-def add_multiple_scale_consumers(codelet_folder, list_of_codelets_json, number_of_codelets, ip_port_hostmode_list_json):
+# TODO: test
+def add_multiple_scale_consumers(node_folder, ip_port_hostmode_list_json, number_of_feeders_array,
+                                  list_of_memories_json, number_of_nodes):
     with open(ip_port_hostmode_list_json, 'r+') as json_list:
         ip_port_hostmode_list = json.load(json_list)
-        
-        with open(list_of_codelets_json, 'r+') as json_data:
-            codelets_info = json.load(json_data)
-            ips= list(map(lambda datum: datum['ip/port'], codelets_info))
+
+        with open(list_of_memories_json, 'r+') as json_data:
+            memories_info = json.load(json_data)
+            ips= list(map(lambda datum: datum['ip/port'], memories_info))
             list_of_codelets = []
             for ip in ips:
-                list_of_codelets.append(convert(":",ip))
-            matrix = np.array(createMatrix(getAllCodeletsInfos(list_of_codelets)))
+                list_of_codelets.append(convert(":", ip))
+            matrix = np.array(create_matrix(get_all_codelets_infos(list_of_codelets)))
             number_of_connections = matrix.sum(axis=1, dtype='float')
             total_number_of_connections = matrix.sum(dtype='float')
 
@@ -122,159 +119,168 @@ def add_multiple_scale_consumers(codelet_folder, list_of_codelets_json, number_o
             draw = np.random.choice(ips, 10, p=density)
             print(draw)
 
-            for i in range(int(number_of_codelets)):
+            for i in range(int(number_of_nodes)):
                 input_codelets_ips = [draw[i]]
-                input_memories = []
-                for ip in input_codelets_ips:
-                    ip_port = convert(":", ip)
-                    input_memories.extend(dct.get_codelet_info(ip_port[0], ip_port[1]))
-                add_codelet_to_system(codelet_folder, ip_port_hostmode_list[i],input_codelets_ips=input_codelets_ips,
-                                      input_memories=input_memories)
+
+                add_random_consumer(node_folder, ip_port_hostmode_list[i], number_of_feeders_array[i],
+                                    list_of_memories_json)
 
         #TODO: continuar
 
 
-def remove_docker_codelet_from_system(codelet_name):
+def remove_docker_node_from_system(node_name):
     # calls the add simple container script
-    subprocess.check_call(['docker stop', codelet_name])
+    subprocess.check_call(['docker', 'stop', node_name])
 
 
-def get_codelet_info(host, port):
-    data = 'info_'
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        # Connect to server and send data
-        sock.connect((host, int(port)))
-        sock.sendall(bytes(data + "\n", "utf-8"))
-        # Receive data from the server and shut down
-        received = str(sock.recv(1024), "utf-8")
-        try:
-            answer = json.loads(received)
-        except:
-            answer = []
-            raise Exception
-        return answer
+def get_codelet_info(host, port, codelet_name):
+    return dct.get_codelet_info(host, port, codelet_name)
 
 
 def get_all_codelets_infos(list_of_codelets):
     answer = []
     for codelet in list_of_codelets:
-        answer.append(getCodeletInfo(codelet[0], codelet[1]))
-    
+        answer.append(get_codelet_info(codelet[0], codelet[1], codelet[2]))
+
     return answer
 
 
-def create_matrix(list_of_codelets_infos):
+def get_node_info(host, port):
+    return dct.get_node_info(host, port)
+
+
+def get_all_nodes_infos(list_of_ips):
+    answer = []
+    for node in list_of_ips:
+        entry = {'node_name': node, 'info': get_node_info(convert(':', node)[0], convert(':', node)[1])}
+        answer.append(entry)
+    return answer
+
+
+def create_matrix(list_of_nodes_infos):
     # empty matrix
     matrix = []
-    for i in range(len(list_of_codelets_infos)): 
+    for i in range(len(list_of_nodes_infos)):
         row = []
-        for j in range(len(list_of_codelets_infos)): 
+        for j in range(len(list_of_nodes_infos)):
             row.append(0)
         matrix.append(row)
     # fill matrix
-    for i in range(len(list_of_codelets_infos)):
-        codelet_i = list_of_codelets_infos[i]
-        inputs_i = codelet_i['inputs']
-        outputs_i = codelet_i['outputs']
-        for j in range(len(list_of_codelets_infos)):
+    for i in range(len(list_of_nodes_infos)):
+        node_i = list_of_nodes_infos[i]
+        inputs_i = node_i['info']['input_ips']
+        outputs_i = node_i['info']['output_ips']
+        for j in range(len(list_of_nodes_infos)):
             for k in range(len(inputs_i)):
-                if inputs_i[k] in list_of_codelets_infos[j]['outputs']:
+                if inputs_i[k] in list_of_nodes_infos[j]['info']['output_ips']:
                     matrix[i][j] = 1
-            
+                if inputs_i[k] == list_of_nodes_infos[j]['node_name']:
+                    matrix[i][j] = 1
+
             for k in range(len(outputs_i)):
-                if outputs_i[k] in list_of_codelets_infos[j]['inputs']:
+                if outputs_i[k] in list_of_nodes_infos[j]['info']['input_ips']:
                     matrix[i][j] = 1
-            
+                if outputs_i[k] == list_of_nodes_infos[j]['node_name']:
+                    matrix[i][j] = 1
+
             # se inputs == outputs, marque uma conexão
     return matrix
 
 
-def draw_network(list_of_codelets, graph_name):
-    matrix = createMatrix(getAllCodeletsInfos(list_of_codelets))
+def draw_network(list_of_ips, graph_name):
+    matrix = create_matrix(get_all_nodes_infos(list_of_ips))
 
     print(matrix)
-    g = nx.from_numpy_matrix(np.array(matrix))
+    # g = nx.from_numpy_matrix(np.array(matrix))
+    g = nx.from_numpy_matrix(np.array(matrix), create_using=nx.DiGraph)
     f = plt.figure()
     nx.draw(g, ax=f.add_subplot(111), with_labels=True)
     f.savefig(graph_name)
 
 
-def convert(separator, string): 
-    li = list(string.split(separator)) 
-    return li 
+def convert(separator, string):
+    li = list(string.split(separator))
+    return li
 
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "ho:f:e:c:i:m:O:M:s:l:L:n:C:", ["help=", "option=", "codelet-folder=",
-                                                                                 "ip-port=", "codelet-name=",
-                                                                                 "input-ips=", "input-memories=",
-                                                                                 "output-ips=",
-                                                                                 "output-memories=", "sources=",
-                                                                                 "ip-port-hostmode-list-json=",
-                                                                                 "list-of-codelets-json=",
-                                                                                 "number-of-codelets=",
-                                                                                 "list-of-codelets="])
+        opts, args = getopt.getopt(sys.argv[1:], "ho:f:e:c:i:s:l:L:n:C:", ["help=", "option=", "node-folder=",
+                                                                           "ip-port=", "node-name=",
+                                                                           "connections-info=", "sources=",
+                                                                           "ip-port-hostmode-list-json=",
+                                                                           "list-of-memories-json=",
+                                                                           "number-of-nodes=", "list-of-nodes="])
     except getopt.GetoptError:
-        print('devel')
+        print('call with -h or --help to see options')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            print('help')
+            print('options: -o --option, -f --node-folder, -e --ip-port, -c --node-name, -i --connections-info, \n'
+                  '-s --sources, -l --ip-port-hostmode-list-json, -L --list-of-memories-json, -n --number-of-nodes, \n'
+                  '-C --list-of-nodes \n \n'
+                  '### example usages ### \n'
+                  'to insert a random node that only consumes: \n'
+                  'python3 utils.py --option random -f node_test --ip-port 127.0.0.1:9996 -s -1 -L '
+                  'list_of_memories.json \n'
+                  'to insert a full defined node: \n'
+                  'python3 utils.py --option specific -f node_test -e 127.0.0.1:9995 --node-name test_node_1 -i '
+                  '\'behavioral sensory-memory@tcp@127.0.0.1:9998 motor-memory@local@home/codelets/behavioral/memories;'
+                  ' motor motor-memory@local@home/codelets/behavioral/memories none\' \n'
+                  'to add multiple random nodes: \n'
+                  'python3 utils.py --option multiple-random -f node_test -l open_ports.json -s -1 -L '
+                  'list_of_memories.json -n 5 \n'
+                  'to kill a node: \n'
+                  'python3 utils.py --option remove -c random_286\n'
+                  'to draw a image representing the network: \n'
+                  'python3 utils.py --option draw-network -C 127.0.0.1:9998,127.0.0.1:9997,127.0.0.1:9996')
             sys.exit()
         elif opt in ('-o', '--option'):
             option = arg
-        elif opt in ('-f', '--codelet-folder'):
-            codelet_folder = arg
+        elif opt in ('-f', '--node-folder'):
+            node_folder = arg
         elif opt in ('-e', '--ip-port'):
             ip_port_hostmode = arg
-        elif opt in ('-c', '--codelet-name'):
-            new_codelet_name = arg
-            codelet_name = arg
-        elif opt in ('-i', '--input-ips'):
+        elif opt in ('-c', '--node-name'):
+            new_node_name = arg
+            node_name = arg
+        elif opt in ('-i', '--connections-info'):
             input_codelets_ips = arg.split(',')
-        elif opt in ('-m', '--input-memories'):
-            input_memories = arg.split(',')
-        elif opt in ('-O', '--output-ips'):
-            output_codelets_ips = arg.split(',')
-        elif opt in ('-M', '--output-memories'):
-            output_memories = arg.split(',')
         elif opt in ('-s', '--sources'):
             number_of_feeders_array = arg.split(',')
             if len(number_of_feeders_array) == 1:
                 number_of_feeders = number_of_feeders_array[0]
         elif opt in ('-l', '--ip-port-hostmode-list-json'):
             ip_port_hostmode_list_json = arg
-        elif opt in ('-L', '--list-of-codelets-json'):
-            list_of_codelets_json = arg
-        elif opt in ('-n', '--number-of-codelets'):
-            number_of_codelets = arg
-        elif opt in ('-C', 'list-of-codelets'):
-            list_of_codelets = arg.split(',')
+        elif opt in ('-L', '--list-of-memories-json'):
+            list_of_memories_json = arg
+        elif opt in ('-n', '--number-of-nodes'):
+            number_of_nodes = arg
+        elif opt in ('-C', '--list-of-nodes'):
+            list_of_nodes = arg.split(',')
 
     try:
         if option == 'random':
-            add_random_consumer(codelet_folder, ip_port_hostmode, number_of_feeders, list_of_codelets_json)
+            add_random_consumer(node_folder, ip_port_hostmode, number_of_feeders, list_of_memories_json)
 
-        elif option == 'consumer':
-            add_codelet_to_system(codelet_folder, ip_port_hostmode, new_codelet_name,
-                                  input_codelets_ips=input_codelets_ips, input_memories=input_memories)
+        elif option == 'specific':
+            add_node_to_system(node_folder, ip_port_hostmode, new_node_name, input_codelets_ips[0])
 
         elif option == 'scale':
-            add_multiple_scale_consumers(codelet_folder, list_of_codelets_json, number_of_codelets,
-                                         ip_port_hostmode_list_json)
+            add_multiple_scale_consumers(node_folder, ip_port_hostmode_list_json, number_of_feeders_array,
+                                         list_of_memories_json, number_of_nodes)
 
         elif option == 'multiple-random':
-            add_multiple_random_consumers(codelet_folder, ip_port_hostmode_list_json, number_of_feeders_array,
-                                          list_of_codelets_json, number_of_codelets)
+            add_multiple_random_consumers(node_folder, ip_port_hostmode_list_json, number_of_feeders_array,
+                                          list_of_memories_json, number_of_nodes)
 
         elif option == 'remove':
-            remove_docker_codelet_from_system(codelet_name)
+            remove_docker_node_from_system(node_name)
 
         elif option == 'draw-network':
-            draw_network(list_of_codelets, "graph.png")
+            draw_network(list_of_nodes, "graph.png")
     except:
-        print('Error!')
+        print('Error! Call with -h or --help to see options')
 
     sys.exit()
