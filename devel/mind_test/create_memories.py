@@ -15,7 +15,10 @@ import sys
 import glob
 from pymongo import MongoClient
 import redis
+import os
 
+os.chdir(os.path.dirname(__file__))
+current_dir = os.getcwd()
 # mount : receber lista de codelets
 # verificar inputs, outputs e tipo de codelet
 # montar metodos de acesso e ligar tudo 
@@ -28,8 +31,8 @@ import redis
 def mount(list_of_codelets):
     for codelet in list_of_codelets:
         field_file = None
-        for filename in glob.iglob('./nodes/**', recursive=True):
-            if filename.__contains__(codelet + '/codelet/fields'):
+        for filename in glob.iglob(current_dir + '/nodes/**', recursive=True):
+            if filename.__contains__(codelet + '/fields'):
                 field_file = filename
         with open(field_file, 'r+') as json_data:  # abrir o fields
             jsonData = json.load(json_data)

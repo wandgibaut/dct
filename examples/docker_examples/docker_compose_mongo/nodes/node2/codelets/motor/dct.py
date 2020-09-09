@@ -244,8 +244,24 @@ def add_memory_to_group(root_codelet_dir, memory_name, newGroup, inputOrOutput):
     set_memory_objects(root_codelet_dir, memory_name, 'group', memory_group, inputOrOutput)
 
 
-def get_codelet_info(host, port):
-    data = 'info_'
+def get_node_info(host, port):
+    data = 'info'
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        # Connect to server and send data
+        sock.connect((host, int(port)))
+        sock.sendall(bytes(data + "\n", "utf-8"))
+        # Receive data from the server and shut down
+        received = str(sock.recv(1024), "utf-8")
+        print(received)
+        try:
+            answer = json.loads(received)
+        except:
+            answer = []
+            raise Exception
+        return answer
+
+def get_codelet_info(host, port, codelet_name):
+    data = 'info_' + codelet_name
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
         sock.connect((host, int(port)))
