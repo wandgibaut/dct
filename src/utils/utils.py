@@ -194,13 +194,7 @@ def draw_network(list_of_ips, graph_name):
     # g = nx.from_numpy_matrix(np.array(matrix))
     g = nx.from_numpy_matrix(np.array(matrix), create_using=nx.DiGraph)
     f = plt.figure()
-    
-    node_color = []
-    for node in nx.nodes(g):
-        node_color.append(g.degree(node))
-
-    # nx.draw(g, ax=f.add_subplot(111), with_labels=True)
-    nx.draw_shell(g, ax=f.add_subplot(111), with_labels=True, node_size=200, node_color=node_color, cmap=plt.cm.Blues)
+    nx.draw(g, ax=f.add_subplot(111), with_labels=True)
     f.savefig(graph_name)
 
 
