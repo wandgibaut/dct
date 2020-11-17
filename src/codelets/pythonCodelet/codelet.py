@@ -10,10 +10,10 @@
 #                                                                             #
 # ****************************************************************************#
 import os
-from dct import PythonCodelet
+import dct
+import threading
 
-
-class TestCodelet(PythonCodelet):
+class TestCodelet(dct.PythonCodelet):
 
     def calculate_activation(self):
         print("new Activation")
@@ -24,6 +24,5 @@ class TestCodelet(PythonCodelet):
 
 
 if __name__ == '__main__':
-    print(os.getenv('ROOT_CODELET_DIR'))
     codelet = TestCodelet(name='defaultCodelet')
-    codelet.run()
+    threading.Thread(target=codelet.run).start()
