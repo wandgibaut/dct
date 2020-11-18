@@ -14,7 +14,6 @@ import sys
 import os
 import time
 import socket
-import socketserver
 import redis
 from pymongo import MongoClient
 
@@ -259,6 +258,7 @@ def get_node_info(host, port):
             answer = []
             raise Exception
         return answer
+
 
 def get_codelet_info(host, port, codelet_name):
     data = 'info_' + codelet_name

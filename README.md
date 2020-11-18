@@ -41,7 +41,7 @@ This repository also contains utility scripts, including **Docker-compose** scri
 
 Figure 2 - The concept of a DCT Codelet.
 
-In the src/codelets folder you can find all implementations of the DCT **Codelet** (currently in Python only) with all auxiliary scripts. The *methods* folder contains all basic scripts to make the codelet work and is not meant to be changed (with exception if you want to do your own implementation). In the codelet's root folder you may find six files and another folder (besides methods):
+In the src/codelets folder you can find all implementations of the DCT **Codelet** (currently in Python only) with all auxiliary scripts. In the codelet's root folder you may find three files and a folder:
 
 - codelet.py
 - dct.py
@@ -50,7 +50,7 @@ In the src/codelets folder you can find all implementations of the DCT **Codelet
 
 The *fields.json* file contains information regarding this codelet, including *name*, *timestep*, *inputs* and *outputs*. Here, inputs and outputs are lists with strutures containing *ip/port*, *name* and *type*, and represents each **Memory** which this codelet interacts. The second one *codelet.py*, represent the base script of the **Codelet** itself and it is up to the user to extend the base *Class* and implement the relevant code. Remember that the *proc* method is called in a loop, with a sleep of *timestep* seconds between each call.
 
-The *dct.py* file is a module with some the base Class (Codelet) and some commonly used functions.
+The *dct.py* file is a python module with some the base Class (PythonCodelet) and some commonly used functions.
 
 Finally, the memories folder should contain all simple **.json**
  files representing memories readed or writen through TCP communication.

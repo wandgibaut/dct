@@ -9,9 +9,9 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 # ****************************************************************************#
-import os
 import dct
 import threading
+
 
 class TestCodelet(dct.PythonCodelet):
 

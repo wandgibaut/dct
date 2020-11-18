@@ -19,7 +19,6 @@ import os
 import glob
 import configparser
 root_node_dir = os.getenv('ROOT_NODE_DIR')
-# root_node_dir = '/home/wander/OtherProjects/dct_pack/dct/devel/mind_test/nodes/node1'
 
 
 class CodeletTCPHandler(socketserver.BaseRequestHandler):
