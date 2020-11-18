@@ -15,21 +15,21 @@ import sys
 import glob
 from pymongo import MongoClient
 import redis
+import os
 
-# mount : receber lista de codelets
-# verificar inputs, outputs e tipo de codelet
-# montar metodos de acesso e ligar tudo 
+os.chdir(os.path.dirname(__file__))
+current_dir = os.getcwd()
 
-#padrão pra nome da base e da collection
+# standard for names of Base and Collection
 # base: 'database-raw-memory'
-# collection: '<tipo: sensory, perceptual...>-<anotação: nome do codelet, grupo de codelets...>-input-memories'
+# collection: '<to: perceptual, behavioral...>-input-memories'
 
 
 def mount(list_of_codelets):
     for codelet in list_of_codelets:
         field_file = None
-        for filename in glob.iglob('./nodes/**', recursive=True):
-            if filename.__contains__(codelet + '/codelet/fields'):
+        for filename in glob.iglob(current_dir + '/nodes/**', recursive=True):
+            if filename.__contains__(codelet + '/fields'):
                 field_file = filename
         with open(field_file, 'r+') as json_data:  # abrir o fields
             jsonData = json.load(json_data)
@@ -49,7 +49,7 @@ def mount(list_of_codelets):
                         mem = inMem.find_one(
                             {'name': convert(inputMemory['name'])[1]}) # e checa se existe uma memoria com esse name
 
-                        if(mem == None):  # se sim, deixa quieto, se não, cria
+                        if mem is None:  # se sim, deixa quieto, se não, cria
                             memory = {'name': convert(inputMemory['name'])[1],'ip/port': inputMemory['ip/port'],'type': 'mongo', 'group': [], 'I': None,'eval': 0.0}
                             inMem.insert_one(memory)
                             print(memory)
@@ -61,7 +61,7 @@ def mount(list_of_codelets):
                         client.set(convert(inputMemory['name'])[1], json.dumps(mem))
                     
                     if inputMemory['type'] == 'tcp':
-                        #subprocess.check_call()
+                        # subprocess.check_call()
                         print('tcp')
                 except: 
                     print('an error has occurred!!')

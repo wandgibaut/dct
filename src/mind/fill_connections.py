@@ -10,10 +10,8 @@
 #                                                                             #
 # ****************************************************************************#
 
-import socketserver
 import sys
 import json
-import threading
 import os
 import glob
 
@@ -103,14 +101,6 @@ def clear():
 	for connection in connections['connections']:
 		clear_connection(connection, 'in')
 		clear_connection(connection, 'out')
-
-
-def test():
-	for filename in glob.iglob('./nodes/**', recursive=True):
-		if filename.__contains__('fields'):
-			print(filename)
-		if filename.__contains__('sensory/codelet/fields'):
-			print('here')
 
 
 if __name__ == '__main__':
