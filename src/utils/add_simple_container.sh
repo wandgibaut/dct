@@ -13,11 +13,11 @@
 #*****************************************************************************#
 
 
-# $1: codelet folder
+# $1: node folder
 # $2: ip:port of the container server
 # $3: container name 
 
-docker run --name $3 -d -it --network host  --env ROOT_CODELET_DIR=/home/codelet wandgibaut/python_codelet /bin/bash &
-sleep 1
-docker cp $1/. $3:/home
-docker exec -d $3 /home/codelet/methods/run.sh $2 &
+docker run --name $3 -d -it --network host  --env ROOT_NODE_DIR=/home/node wandgibaut/python_codelet /bin/bash &
+sleep 2
+docker cp $1/. $3:/home/node
+docker exec -d $3 /home/node/nodeMaster.sh $2 &

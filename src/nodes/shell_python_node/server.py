@@ -13,7 +13,7 @@
 import socketserver
 import socket
 import sys
-import json
+import ujson as json
 import threading
 import os
 import glob

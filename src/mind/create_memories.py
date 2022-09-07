@@ -10,7 +10,7 @@
 #                                                                             #
 # ****************************************************************************#
 
-import json
+import ujson as json
 import sys
 import glob
 from pymongo import MongoClient
@@ -19,10 +19,13 @@ import os
 
 os.chdir(os.path.dirname(__file__))
 current_dir = os.getcwd()
+# mount : receber lista de codelets
+# verificar inputs, outputs e tipo de codelet
+# montar metodos de acesso e ligar tudo 
 
-# standard for names of Base and Collection
+#padrão pra nome da base e da collection
 # base: 'database-raw-memory'
-# collection: '<to: perceptual, behavioral...>-input-memories'
+# collection: '<tipo: sensory, perceptual...>-<anotação: nome do codelet, grupo de codelets...>-input-memories'
 
 
 def mount(list_of_codelets):
@@ -49,7 +52,7 @@ def mount(list_of_codelets):
                         mem = inMem.find_one(
                             {'name': convert(inputMemory['name'])[1]}) # e checa se existe uma memoria com esse name
 
-                        if mem is None:  # se sim, deixa quieto, se não, cria
+                        if(mem == None):  # se sim, deixa quieto, se não, cria
                             memory = {'name': convert(inputMemory['name'])[1],'ip/port': inputMemory['ip/port'],'type': 'mongo', 'group': [], 'I': None,'eval': 0.0}
                             inMem.insert_one(memory)
                             print(memory)
@@ -61,7 +64,7 @@ def mount(list_of_codelets):
                         client.set(convert(inputMemory['name'])[1], json.dumps(mem))
                     
                     if inputMemory['type'] == 'tcp':
-                        # subprocess.check_call()
+                        #subprocess.check_call()
                         print('tcp')
                 except: 
                     print('an error has occurred!!')
