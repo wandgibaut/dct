@@ -13,7 +13,7 @@ import sys
 import os
 import getopt
 import dct
-import json
+import ujson as json
 import subprocess
 import random
 import socket
@@ -24,6 +24,14 @@ import matplotlib.pyplot as plt
 
 # 'behavior sensory-memory@tcp@127.0.0.1:9998,sensory-memory@local@127.0.0.1:9998 motor-memory@aaaaa; .... '
 def add_node_to_system(node_folder, ip_port_hostmode, new_node_name, codelets_input_output):
+    change_inputs_outputs_from_all_codelets(node_folder, codelets_input_output)
+
+    print(node_folder + ' ' + ip_port_hostmode)
+    # calls the add simple container script
+    subprocess.check_call(['./add_simple_container.sh', node_folder, ip_port_hostmode, new_node_name])
+
+
+def change_inputs_outputs_from_all_codelets(node_folder, codelets_input_output):
     codelets_to_add = convert("; ", codelets_input_output)
     for codelet in codelets_to_add:
         name_input_output = convert(' ', codelet)
@@ -32,8 +40,13 @@ def add_node_to_system(node_folder, ip_port_hostmode, new_node_name, codelets_in
             new_inputs = []
             if name_input_output[1] != 'none':
                 for input in convert(',', name_input_output[1]):
-                    mem = {"ip/port": convert('@', input)[2], "type": convert('@', input)[1],
-                           "name": convert('@', input)[0]}
+                    split_mem_info = convert('@', input)
+                    if len(split_mem_info) == 4:
+                        group = [split_mem_info[3]]
+                    else:
+                        group = []
+                    mem = {"ip/port": split_mem_info[2], "type": split_mem_info[1],
+                           "name": split_mem_info[0], "group": group}
                     new_inputs.append(mem)
 
             codelet_info['inputs'] = new_inputs
@@ -41,8 +54,13 @@ def add_node_to_system(node_folder, ip_port_hostmode, new_node_name, codelets_in
             new_outputs = []
             if name_input_output[2] != 'none':
                 for output in convert(',', name_input_output[2]):
-                    mem = {"ip/port": convert('@', output)[2], "type": convert('@', output)[1],
-                           "name": convert('@', output)[0]}
+                    split_mem_info = convert('@', output)
+                    if len(split_mem_info) == 4:
+                        group = [split_mem_info[3]]
+                    else:
+                        group = []
+                    mem = {"ip/port": split_mem_info[2], "type": split_mem_info[1],
+                           "name": split_mem_info[0], "group": group}
                     new_outputs.append(mem)
 
             codelet_info['outputs'] = new_outputs
@@ -51,10 +69,6 @@ def add_node_to_system(node_folder, ip_port_hostmode, new_node_name, codelets_in
             json_data.seek(0)  # rewind
             json.dump(codelet_info, json_data)
             json_data.truncate()
-
-    print(node_folder + ' ' + ip_port_hostmode)
-    # calls the add simple container script
-    subprocess.check_call(['./add_simple_container.sh', node_folder, ip_port_hostmode, new_node_name])
 
 
 def add_random_consumer(node_folder, ip_port_hostmode, number_of_feeders, list_of_memories_json):

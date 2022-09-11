@@ -9,7 +9,7 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 # ****************************************************************************#
-import json
+import ujson as json
 import sys
 import os
 import time
@@ -146,6 +146,18 @@ def set_memory_objects(root_codelet_dir, memory_name, field, value, inputOrOutpu
                                           memory_name, field, value)
                 else:  # local
                     return set_local_memory(entry['ip/port'], memory_name, field, value)
+
+
+def get_all_memory_objects(root_codelet_dir, inputOrOutput):
+    with open(root_codelet_dir + '/fields.json', 'r+') as json_data:
+        jsonData = json.load(json_data)
+        vector = jsonData[inputOrOutput]
+        answer = []
+        for entry in vector:
+            answer.append(get_memory_objects(root_codelet_dir, entry['name'], inputOrOutput))
+        if answer:
+            return answer
+        return None
 
 
 def get_memory_objects_group(root_codelet_dir, inputOrOutput, group):

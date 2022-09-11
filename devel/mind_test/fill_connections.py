@@ -12,7 +12,7 @@
 
 import socketserver
 import sys
-import json
+import ujson as json
 import threading
 import os
 import glob
@@ -61,7 +61,7 @@ def create_json_memory(connection, name):
 
 
 def create_connection(connection):
-	if (connection['type'] == 'tcp')  or (connection['type'] == 'local'):
+	if (connection['type'] == 'tcp') or (connection['type'] == 'local'):
 		name = connection['in'] + '-' + connection['out'] + '-' + 'memory'
 		create_json_memory(connection, name)
 	else:
@@ -70,7 +70,8 @@ def create_connection(connection):
 	conn = {
 		"ip/port": connection['ip/port'],
 		"type": connection['type'],
-		"name": name
+		"name": name,
+		"group": connection['group']
 	}
 	return conn
 
