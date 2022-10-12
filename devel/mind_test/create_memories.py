@@ -10,7 +10,7 @@
 #                                                                             #
 # ****************************************************************************#
 
-import json
+import ujson as json
 import sys
 import glob
 from pymongo import MongoClient
