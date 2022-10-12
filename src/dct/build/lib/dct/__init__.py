@@ -10,11 +10,13 @@
 #                                                                             #
 # ****************************************************************************#
 
-import ujson as json
+import json
 import socket
 import redis
 from pymongo import MongoClient
 
+__version__ = '0.1.0'
+__author__ = 'Wandemberg Gibaut'
 
 
 def get_memory_object(memory_name, ip_port, conn_type):

@@ -1,0 +1,4 @@
+flask>=2.2.2
+pymongo>=4.2.0
+redis>=4.3.4
+requests>=2.28.1

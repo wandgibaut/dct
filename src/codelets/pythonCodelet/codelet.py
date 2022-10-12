@@ -9,7 +9,7 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 # ****************************************************************************#
-import dct
+import dct.dct as dct
 import threading
 
 

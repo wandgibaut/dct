@@ -12,7 +12,7 @@
 import sys
 import os
 import getopt
-import dct
+import dct.dct as dct
 import ujson as json
 import subprocess
 import random

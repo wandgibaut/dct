@@ -10,7 +10,7 @@
 #                                                                             #
 # ****************************************************************************#
 
-import ujson as json
+import json
 import sys
 import os
 import time

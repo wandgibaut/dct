@@ -12,7 +12,7 @@
 import time
 import threading
 import os
-import dct
+import dct.dct as dct
 
 
 class MotorCodelet(dct.PythonCodelet):

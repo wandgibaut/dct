@@ -12,7 +12,7 @@
 import time
 import os
 import threading
-import dct
+import dct.dct as dct
 
 
 class SensoryCodelet(dct.PythonCodelet):
