@@ -28,7 +28,7 @@ def get_memory_object(memory_name, ip_port, conn_type):
     if conn_type == 'mongo':
         return get_mongo_memory(ip_port, memory_name)
     elif conn_type == 'redis':
-        return get_redis_memory(ip_port, convert("/", memory_name)[1])
+        return get_redis_memory(ip_port, memory_name)
     elif conn_type == 'tcp':
         return get_tcp_memory(convert(":", ip_port)[0], convert(":", ip_port)[1], memory_name)
     elif conn_type == 'local':
@@ -40,7 +40,7 @@ def set_memory_object(memory_name, ip_port, conn_type, field, value):
     if conn_type == 'mongo':
         return set_mongo_memory(ip_port, memory_name, field, value)
     elif conn_type == 'redis':
-        return set_redis_memory(ip_port, convert("/", memory_name)[1], field, value)
+        return set_redis_memory(ip_port, memory_name, field, value)
     elif conn_type == 'tcp':
         return set_tcp_memory(convert(":", ip_port)[0], convert(":", ip_port)[1], memory_name, field, value)
     elif conn_type == 'local':
@@ -109,31 +109,46 @@ def get_all_memory_objects(root_codelet_dir, inputOrOutput):
 def get_redis_memory(host_port, memory_name):
     host = convert(':', host_port)[0]
     port = convert(':', host_port)[1]
-    client = redis.Redis(host=host, port=port)
-    return json.loads(client.get(memory_name))
+    try:
+        client = redis.Redis(host=host, port=port)
+        return json.loads(client.get(memory_name))
+    except:
+        return None
 
 
 def set_redis_memory(host_port, memory_name, field, value):
     host = convert(':', host_port)[0]
     port = convert(':', host_port)[1]
     client = redis.Redis(host=host, port=port)
-    mem = json.loads(client.get(memory_name))
+    try:
+        mem = json.loads(client.get(memory_name))
+    except:
+        mem = {'name': memory_name,'ip/port': host_port,'type': 'redis', 'group': [],'I': None,'eval': 0.0}
+        client.set(memory_name, json.dumps(mem))
     mem[field] = value
     client.set(memory_name, json.dumps(mem))
 
 
 def get_mongo_memory(host_port, memory_name):
     client = MongoClient(host_port)
-    base = client['database-raw-memory']
-    collection = base[convert("/", memory_name)[0]]
-    return collection.find_one({'name': convert("/", memory_name)[1]})
+    try:
+        base = client['database-raw-memory']
+        collection = base[convert(":", memory_name)[0]]
+        return collection.find_one({'name': convert(":", memory_name)[1]})
+    except:
+        return None
 
 
 def set_mongo_memory(host_port, memory_name, field, value):
     client = MongoClient(host_port)
     base = client['database-raw-memory']
-    collection = base[convert("/", memory_name)[0]]
-    collection.update_one({'name': convert("/", memory_name)[1]}, {'$set': {field: value}})
+    collection = base[convert(":", memory_name)[0]]
+    try:
+        collection.update_one({'name': convert(":", memory_name)[1]}, {'$set': {field: value}})
+    except:
+        mem = {'name': convert(":", memory_name)[1],'ip/port': host_port,'type': 'mongo', 'group': [],'I': None,'eval': 0.0}
+        mem[field] = value
+        collection.insert_one(mem)
 
 
 def get_tcp_memory(host, port, memory_name):

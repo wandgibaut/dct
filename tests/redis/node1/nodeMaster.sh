@@ -149,15 +149,21 @@ done
 if [ -z ${memory+x} ]
   then
     #echo "redis is true"
-    echo "${memory[0]}"
-    if [ "${memory[0]}" = true ]
+    #echo "${memory[redis]}"
+    echo "${active_codelets[@]}"
+    if [ "${memory[redis]}" = true ]
       then
         echo "redis is true"
-        $ IFS=: read -r ip port <<< "${SERVER_IPS[0]}"
+        echo "${SERVER_IPS[0]}"
+        #$ IFS=: read -r ip port <<< "${SERVER_IPS[0]}"
+        port=$(echo "${SERVER_IPS[0]}" | cut -f 2 -d ":")
         redis-server --port "$(($port + 1))"
     fi
 fi
 
+
+# create memories if pertinent
+#./create_memories.sh "${active_codelets[@]}"
 
 
 # periodically check the health

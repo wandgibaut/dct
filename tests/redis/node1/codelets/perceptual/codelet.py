@@ -24,7 +24,7 @@ class PerceptualCodelet(dct.codelets.PythonCodelet):
     def proc(self, activation):
         mem = dct.get_memory_objects_by_name(self.root_codelet_dir, 'perceptual-sensory-memory', 'inputs')[0]
         # print(mem['I'])
-        dct.set_memory_objects_by_name(self.root_codelet_dir, 'behavioral-perceptual-memory', 'I', mem['I'], 'outputs')
+        dct.set_memory_objects_by_name(self.root_codelet_dir, 'behavioral-memory', 'I', mem['I'], 'outputs')
 
 
 if __name__ == '__main__':
