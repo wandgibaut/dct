@@ -76,6 +76,25 @@ Further explanation is given on the *readme.md* inside each example.
 All containers are created with [pythonCodelet](https://hub.docker.com/repository/docker/wandgibaut/python_codelet) image, which is based on python3 image with *pymongo* and *redis* installed.
 
 
+## Citation
+If you use this code in your research, please cite the following paper:
+
+### APA
+
+Gibaut, W., & Gudwin, R. (2020, November). Extending the CST: The Distributed Cognitive Toolkit. In 2020 International Conferences on Internet of Things (iThings) and IEEE Green Computing and Communications (GreenCom) and IEEE Cyber, Physical and Social Computing (CPSCom) and IEEE Smart Data (SmartData) and IEEE Congress on Cybermatics (Cybermatics) (pp. 474-481). IEEE.
+
+### BIBTEX
+
+@inproceedings{gibaut2020extending,
+  title={Extending the CST: The Distributed Cognitive Toolkit},
+  author={Gibaut, Wandemberg and Gudwin, Ricardo},
+  booktitle={2020 International Conferences on Internet of Things (iThings) and IEEE Green Computing and Communications (GreenCom) and IEEE Cyber, Physical and Social Computing (CPSCom) and IEEE Smart Data (SmartData) and IEEE Congress on Cybermatics (Cybermatics)},
+  pages={474--481},
+  year={2020},
+  organization={IEEE}
+}
+
+
 # ____________________________________________
 
 Note: This project is still under development, and some concepts or features might not be available yet. [Feedback/bug report](https://github.com/wandgibaut/dct/issues) and [Pull Requests](https://github.com/wandgibaut/dct/pulls) are most welcome!
