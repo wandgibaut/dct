@@ -17,7 +17,7 @@ import os
 import glob
 import configparser
 import requests
-from flask import Flask, jsonify, request, Response
+from flask import Flask, request, Response
 import dct
 
 
@@ -34,21 +34,14 @@ def home():
     return "API."
 
 
-#@app.route('/get_memory/<memory_name>')
-#def get_memory(memory_name):
-#    #get_memory_objects_by_name(root_node_dir, memory_name, 'outputs')
-#    file_memory = None
-#    for filename in glob.iglob(root_node_dir + '/**', recursive=True):
-#        if filename.__contains__(memory_name + '.json'):
-#            file_memory = filename
-#    with open(file_memory, 'r+') as json_data:
-#        memory = json.dumps(json.load(json_data))
-#        return memory
-
 @app.route('/get_memory/<memory_name>')
-def get_memory(memory_name):
-    #get_memory_objects_by_name(root_node_dir, memory_name, 'outputs')
-    #file_memory = None
+def get_memory(memory_name : str) -> Response:
+    '''
+    API routine to return a memory object
+        :param memory_name: name of the memory object
+        :return: memory object
+        :rtype: Response
+    '''
     for filename in glob.iglob(root_node_dir + '/**', recursive=True):
         if filename.__contains__('fields.json'):
             with open(filename, 'r+') as json_data:
@@ -63,6 +56,7 @@ def get_memory(memory_name):
                 if len(answer) != 0:
                     return answer
     return Response(status=404, headers={})
+
 
 @app.route('/set_memory/', methods=['POST'])
 def set_memory():
@@ -84,24 +78,6 @@ def set_memory():
             return Response(status=200, headers={})
     return Response(status=404, headers={})
 
-#@app.route('/set_memory/', methods=['POST'])
-#def set_memory():
-#    request_data = request.get_json()
-#    memory_name = request_data['memory_name']
-#    field = request_data['field']
-#    value = request_data['value']
-#    
-#    file_memory = None
-#    for filename in glob.iglob(root_node_dir + '/**', recursive=True):
-#        if filename.__contains__(memory_name + '.json'):
-#            file_memory = filename
-#    with open(file_memory, 'r+') as json_data:
-#        jsonData = json.load(json_data)
-#        jsonData[field] = value
-#        json_data.seek(0) # rewind
-#        json.dump(jsonData, json_data)
-#        json_data.truncate()
-#        return Response(status=200, headers={})
 
 @app.route('/get_codelet_info/<codelet_name>')
 def get_codelet_info(codelet_name):
@@ -227,9 +203,6 @@ def listen_internal_codelet():
 def split(string): 
     li = list(string.split(":")) 
     return li 
-
-
-#app.run(host="0.0.0.0", port=5000))
 
 
 if __name__ == "__main__":

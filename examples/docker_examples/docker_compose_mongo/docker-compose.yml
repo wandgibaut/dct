@@ -16,16 +16,7 @@ services:
     network_mode: host
     environment:
       - ROOT_NODE_DIR=/home/node
-    command: /home/node/nodeMaster.sh 127.0.0.1:9997
-
-  touchMemories:
-    image: "wandgibaut/python_codelet"
-    volumes:
-      - ./:/home
-    depends_on:
-      - mongodb
-    network_mode: host
-    command: /home/create_memories.sh sensory perceptual behavioral motor
+    command: /home/node/nodeMaster.sh 127.0.0.1:9996
 
   mongodb:
     image: mongo:latest

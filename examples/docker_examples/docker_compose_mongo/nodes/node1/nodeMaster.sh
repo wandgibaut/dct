@@ -122,7 +122,9 @@ if [ $# -ne 0 ]
             NAMEARRAY+=("server")
             SERVER_IPS+=("$var")
             echo "$var"
-            python3 "$ROOT_NODE_DIR"/server.py "$var"  &
+            #python3 -m dct.server "$var"  &
+            #python3 "$ROOT_NODE_DIR"/server.py "$var"  &
+            python3 /usr/src/app/dct/server.py "$var"  &
             PIDARRAY+=($!)
         done
 fi
@@ -131,7 +133,8 @@ fi
 #mapfile -t <"$ROOT_NODE_DIR"/init_codelets.txt
 
 #eval "$(cat param.ini  |  python3 parser.py)"
-eval "$(< "$ROOT_NODE_DIR"/param.ini python3 "$ROOT_NODE_DIR"/parser.py)"
+eval "$(< "$ROOT_NODE_DIR"/param.ini python3 /usr/src/app/dct/parser.py)"
+#eval "$(< "$ROOT_NODE_DIR"/param.ini python3 "$ROOT_NODE_DIR"/parser.py)"
 # eval "$(< ./param.ini python3 ./parser.py)"
 
 
@@ -142,12 +145,34 @@ do
   PIDARRAY+=($!)
 done
 
+#run redis if pertinent on a port equal to the node server +1
+if [ -z ${memory+x} ]
+  then
+    #echo "redis is true"
+    #echo "${memory[redis]}"
+    echo "${active_codelets[@]}"
+    if [ "${memory[redis]}" = true ]
+      then
+        echo "redis is true"
+        echo "${SERVER_IPS[0]}"
+        #$ IFS=: read -r ip port <<< "${SERVER_IPS[0]}"
+        port=$(echo "${SERVER_IPS[0]}" | cut -f 2 -d ":")
+        redis-server --port "$(($port + 1))"
+    fi
+fi
+
+
+# create memories if pertinent
+#./create_memories.sh "${active_codelets[@]}"
+
+
 # periodically check the health
 while [[ "${signals["suicide_note"]}" == "false" ]]
 do
   unset active_codelets
   unset signals
-  eval "$(< "$ROOT_NODE_DIR"/param.ini python3 "$ROOT_NODE_DIR"/parser.py)"
+  eval "$(< "$ROOT_NODE_DIR"/param.ini python3 /usr/src/app/dct/parser.py)"
+  #eval "$(< "$ROOT_NODE_DIR"/param.ini python3 "$ROOT_NODE_DIR"/parser.py)"
   check_integrity
   check_codelets
   sleep 10 #check every 10 secs

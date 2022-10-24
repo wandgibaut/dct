@@ -1,5 +1,5 @@
 # ****************************************************************************#
-# Copyright (c) 2020  Wandemberg Gibaut                                       #
+# Copyright (c) 2022  Wandemberg Gibaut                                       #
 # All rights reserved. This program and the accompanying materials            #
 # are made available under the terms of the MIT License                       #
 # which accompanies this distribution, and is available at                    #
@@ -9,11 +9,11 @@
 #      W. Gibaut                                                              #
 #                                                                             #
 # ****************************************************************************#
-import dct.dct as dct
+import os
 import threading
+import dct
 
-
-class TestCodelet(dct.PythonCodelet):
+class TestCodelet(dct.codelets.PythonCodelet):
 
     def calculate_activation(self):
         print("new Activation")
@@ -24,5 +24,5 @@ class TestCodelet(dct.PythonCodelet):
 
 
 if __name__ == '__main__':
-    codelet = TestCodelet(name='defaultCodelet')
+    codelet = TestCodelet(name='defaultCodelet', root_codelet_dir=os.getcwd()+'/codelets/codelet_name')
     threading.Thread(target=codelet.run).start()
