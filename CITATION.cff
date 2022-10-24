@@ -1,0 +1,25 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Extending the CST The Distributed Cognitive
+  Toolkit
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: inproceedings
+doi: 10.1109/iThings-GreenCom-CPSCom-SmartData-Cybermatics50389.2020.00088
+booktitle: 2020 International Conferences on Internet of Things (iThings) and IEEE Green Computing and Communications (GreenCom) and IEEE Cyber, Physical and Social Computing (CPSCom) and IEEE Smart Data (SmartData) and IEEE Congress on Cybermatics (Cybermatics)
+pages: 474--481
+year: 2020
+organization: IEEE
+authors:
+  - given-names: Wandemberg
+    family-names: Gibaut
+    orcid: 'https://orcid.org/0000-0001-7322-5399'
+    affiliation: FEEC - Unicamp
+  - given-names: Ricardo
+    family-names: Gudwin
+    affiliation: FEEC - Unicamp
+
