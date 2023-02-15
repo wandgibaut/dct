@@ -31,7 +31,8 @@ regenerate_process()
   for (( i = 0; i < "${#PIDARRAY[@]}"; i++ )); do
     if [[ "${PIDARRAY[$i]}" == "$1" ]]; then
       if [[ "${NAMEARRAY[$i]}"  == "server" ]]; then
-        python3 "$ROOT_NODE_DIR"/server.py "${SERVER_IPS[0]}"  &
+        #python3 "$ROOT_NODE_DIR"/server.py "${SERVER_IPS[0]}"  &
+        python3 /usr/src/app/dct/server.py "${SERVER_IPS[0]}"  &
         PIDARRAY["$i"]=$!
         echo "server regenerated!"
       else

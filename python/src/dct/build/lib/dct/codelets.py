@@ -16,6 +16,11 @@ import os
 import time
 
 class PythonCodelet:
+    '''
+    Base class for Codelets created in Python
+        :param name: name of the codelet
+        :param root_codelet_dir: path to the codelet directory
+    '''
     def __init__(self, name=None, root_codelet_dir=None):
         if root_codelet_dir is None:
             os.chdir(os.path.dirname(__file__))

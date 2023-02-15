@@ -75,7 +75,7 @@ def set_memory():
                         if entry['name'] == memory_name:
                             #file_memory = entry['file']
                             dct.set_memory_object(memory_name, entry['ip/port'], entry['type'], field, value)
-            return Response(status=200, headers={})
+                            return Response(status=200, headers={})
     return Response(status=404, headers={})
 
 
@@ -85,6 +85,8 @@ def get_codelet_info(codelet_name):
     for filename in glob.iglob(root_node_dir + '/**', recursive=True):
         if filename.__contains__(codelet_name + '/fields.json'):
             file_fields = filename
+    if file_fields is None:
+        return Response(status=404, headers={})
     with open(file_fields, 'r+') as json_data:
         fields = json.dumps(json.load(json_data))
         return fields
@@ -149,6 +151,8 @@ def run_codelet(codelet_name):
 
 @app.route('/configure_death/')
 def config_death():
+    global death_threshold
+    global death_votes
     config = read_param()
     death_threshold = int(config.get('signals', 'death_threshold'))
     death_votes = 0
