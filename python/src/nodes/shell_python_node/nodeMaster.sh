@@ -158,7 +158,7 @@ if [ -z ${memory+x} ]
         echo "${SERVER_IPS[0]}"
         #$ IFS=: read -r ip port <<< "${SERVER_IPS[0]}"
         port=$(echo "${SERVER_IPS[0]}" | cut -f 2 -d ":")
-        redis-server --port "$(($port + 1))"
+        redis-server --port "$(($port + 1))" &
     fi
 fi
 
@@ -168,7 +168,7 @@ fi
 
 
 # periodically check the health
-while [[ "${signals["suicide_note"]}" == "false" ]]
+while [[ "${signals["suicide_note"]}" == false ]]
 do
   unset active_codelets
   unset signals
@@ -176,6 +176,6 @@ do
   #eval "$(< "$ROOT_NODE_DIR"/param.ini python3 "$ROOT_NODE_DIR"/parser.py)"
   check_integrity
   check_codelets
-  sleep 10 #check every 10 secs
+  sleep 5 #check every 5 secs
 done
 

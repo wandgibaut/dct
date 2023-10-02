@@ -181,11 +181,12 @@ def get_redis_memory(host_port : str, memory_name : str) -> dict:
     try:
         client = redis.Redis(host=host, port=port)
         return json.loads(client.get(memory_name))
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 
-def set_redis_memory(host_port : str, memory_name : str, field : str, value : object) -> int:
+def set_redis_memory(host_port : str, memory_name : str, field : str, value : object, full_memory : dict = None) -> int:
     '''
     Set a redis memory object given its name, ip/port, field and value
         :param host_port: ip/port of the memory object
@@ -197,7 +198,14 @@ def set_redis_memory(host_port : str, memory_name : str, field : str, value : ob
     '''
     host = convert(':', host_port)[0]
     port = convert(':', host_port)[1]
+
     client = redis.Redis(host=host, port=port)
+
+    if full_memory is not None:
+        client.set(memory_name, json.dumps(full_memory))
+        return 0
+
+    
     try:
         mem = json.loads(client.get(memory_name))
     except:
@@ -222,7 +230,8 @@ def get_mongo_memory(host_port : str, memory_name : str) -> dict:
         collection = base[convert(":", memory_name)[0]]
         data = collection.find_one({'name': convert(":", memory_name)[1]})
         return json.loads(json_util.dumps(data))
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 

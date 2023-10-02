@@ -53,8 +53,8 @@ def get_memory(memory_name : str) -> Response:
                         if entry['name'] == memory_name:
                             #file_memory = entry['file']
                             answer.append(dct.get_memory_object(memory_name, entry['ip/port'], entry['type']))
-                if len(answer) != 0:
-                    return answer
+                    if len(answer) != 0:
+                        return answer
     return Response(status=404, headers={})
 
 

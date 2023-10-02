@@ -181,7 +181,8 @@ def get_redis_memory(host_port : str, memory_name : str) -> dict:
     try:
         client = redis.Redis(host=host, port=port)
         return json.loads(client.get(memory_name))
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 
@@ -222,7 +223,8 @@ def get_mongo_memory(host_port : str, memory_name : str) -> dict:
         collection = base[convert(":", memory_name)[0]]
         data = collection.find_one({'name': convert(":", memory_name)[1]})
         return json.loads(json_util.dumps(data))
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 
