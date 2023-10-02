@@ -17,8 +17,9 @@ import redis
 from pymongo import MongoClient
 from bson import json_util
 from dct import codelets
-from dct import parser
+#from dct import parser
 from dct import server
+from dct import utils
 
 __version__ = '0.1.0'
 __author__ = 'Wandemberg Gibaut'
@@ -180,11 +181,12 @@ def get_redis_memory(host_port : str, memory_name : str) -> dict:
     try:
         client = redis.Redis(host=host, port=port)
         return json.loads(client.get(memory_name))
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 
-def set_redis_memory(host_port : str, memory_name : str, field : str, value : object) -> int:
+def set_redis_memory(host_port : str, memory_name : str, field : str, value : object, full_memory : dict = None) -> int:
     '''
     Set a redis memory object given its name, ip/port, field and value
         :param host_port: ip/port of the memory object
@@ -196,7 +198,14 @@ def set_redis_memory(host_port : str, memory_name : str, field : str, value : ob
     '''
     host = convert(':', host_port)[0]
     port = convert(':', host_port)[1]
+
     client = redis.Redis(host=host, port=port)
+
+    if full_memory is not None:
+        client.set(memory_name, json.dumps(full_memory))
+        return 0
+
+    
     try:
         mem = json.loads(client.get(memory_name))
     except:
@@ -221,7 +230,8 @@ def get_mongo_memory(host_port : str, memory_name : str) -> dict:
         collection = base[convert(":", memory_name)[0]]
         data = collection.find_one({'name': convert(":", memory_name)[1]})
         return json.loads(json_util.dumps(data))
-    except:
+    except Exception as e:
+        print(e)
         return None
 
 
@@ -333,20 +343,23 @@ def get_node_info(host : str, port : str) -> dict:
         :return: node info
         :rtype: dict
     '''
-    data = 'info'
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    #data = 'info'
+    #with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
-        sock.connect((host, int(port)))
-        sock.sendall(bytes(data + "\n", "utf-8"))
+    #    sock.connect((host, int(port)))
+    #    sock.sendall(bytes(data + "\n", "utf-8"))
         # Receive data from the server and shut down
-        received = str(sock.recv(1024), "utf-8")
-        print(received)
-        try:
-            answer = json.loads(received)
-        except:
-            answer = []
-            raise Exception
-        return answer
+    #    received = str(sock.recv(1024), "utf-8")
+    #    print(received)
+    #    try:
+    #        answer = json.loads(received)
+    #    except:
+    #        answer = []
+    #        raise Exception
+    #    #return answer
+
+    response = requests.get(f'http://{host}:{port}//get_node_info')
+    return response.json()
 
 def get_codelet_info(host : str, port : str, codelet_name : str) -> dict:
     '''
@@ -357,21 +370,23 @@ def get_codelet_info(host : str, port : str, codelet_name : str) -> dict:
         :return: codelet info
         :rtype: dict
     '''
-    data = 'info_' + codelet_name
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    #data = 'info_' + codelet_name
+    #with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
-        sock.connect((host, int(port)))
-        sock.sendall(bytes(data + "\n", "utf-8"))
+    #    sock.connect((host, int(port)))
+    #    sock.sendall(bytes(data + "\n", "utf-8"))
         # Receive data from the server and shut down
-        received = str(sock.recv(1024), "utf-8")
-        print(received)
-        try:
-            answer = json.loads(received)
-        except:
-            answer = []
-            raise Exception
-        return answer
+    #    received = str(sock.recv(1024), "utf-8")
+    #    print(received)
+    #    try:
+    #        answer = json.loads(received)
+    #    except:
+    #        answer = []
+    #        raise Exception
+    #    return answer
 
+    response = requests.get(f'http://{host}:{port}//get_codelet_info/{codelet_name}')
+    return response.json()
 
 def convert(separator, string):
     li = list(string.split(separator))

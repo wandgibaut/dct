@@ -53,8 +53,8 @@ def get_memory(memory_name : str) -> Response:
                         if entry['name'] == memory_name:
                             #file_memory = entry['file']
                             answer.append(dct.get_memory_object(memory_name, entry['ip/port'], entry['type']))
-                if len(answer) != 0:
-                    return answer
+                    if len(answer) != 0:
+                        return answer
     return Response(status=404, headers={})
 
 
@@ -75,9 +75,39 @@ def set_memory():
                         if entry['name'] == memory_name:
                             #file_memory = entry['file']
                             dct.set_memory_object(memory_name, entry['ip/port'], entry['type'], field, value)
-            return Response(status=200, headers={})
+                            return Response(status=200, headers={})
     return Response(status=404, headers={})
 
+
+@app.route('/get_idea/<idea_name>')
+def get_idea(idea_name : str) -> Response:
+    '''
+    API routine to return a memory object
+        :param idea_name: name of the memory object
+        :return: memory object
+        :rtype: Response
+    '''
+    #validar 
+    return dct.get_redis_memory(args, idea_name)  # dict
+    
+
+@app.route('/set_idea/', methods=['POST'])
+def set_idea():
+    request_data = request.get_json()
+    if request_data['full_idea']:
+        full_idea = validate_idea(request_data['full_idea'])
+        if full_idea is None:
+            return Response(status=400, headers={})
+
+        idea_name = request_data['idea_name']
+        dct.set_redis_memory(args, idea_name, None, None, full_memory=full_idea)
+    
+    else:
+        idea_name = request_data['idea_name']
+        field = request_data['field']
+        value = request_data['value']
+        dct.set_redis_memory(args, idea_name, field, value)
+    return Response(status=200, headers={})
 
 @app.route('/get_codelet_info/<codelet_name>')
 def get_codelet_info(codelet_name):
@@ -85,6 +115,8 @@ def get_codelet_info(codelet_name):
     for filename in glob.iglob(root_node_dir + '/**', recursive=True):
         if filename.__contains__(codelet_name + '/fields.json'):
             file_fields = filename
+    if file_fields is None:
+        return Response(status=404, headers={})
     with open(file_fields, 'r+') as json_data:
         fields = json.dumps(json.load(json_data))
         return fields
@@ -149,6 +181,8 @@ def run_codelet(codelet_name):
 
 @app.route('/configure_death/')
 def config_death():
+    global death_threshold
+    global death_votes
     config = read_param()
     death_threshold = int(config.get('signals', 'death_threshold'))
     death_votes = 0
@@ -203,6 +237,13 @@ def listen_internal_codelet():
 def split(string): 
     li = list(string.split(":")) 
     return li 
+
+def validate_idea(idea : dict) -> dict:
+    idea_fields = set(['id', 'name', 'l', 'category', 'scope', 'value'])
+
+    if idea_fields.issubset(idea.keys()):
+        return idea
+    return None
 
 
 if __name__ == "__main__":
