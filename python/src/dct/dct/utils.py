@@ -124,7 +124,7 @@ def add_random_consumer(node_folder : str, ip_port_hostmode : str, number_of_fee
         add_node_to_system(node_folder, ip_port_hostmode, 'random_' + str(random.randint(0, 1000)), inputs)
 
 
-def add_multiple_random_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : list,
+def add_multiple_random_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : List[int],
                                   list_of_memories_json : str, number_of_nodes : int):
     '''
     Adds multiple random consumers to the system
@@ -146,7 +146,7 @@ def add_multiple_random_consumers(node_folder : str, ip_port_hostmode_list_json 
 
 
 # TODO: test
-def add_multiple_scale_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : list,
+def add_multiple_scale_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : List[int],
                                   list_of_memories_json : str, number_of_nodes : int):
     '''
     Adds multiple scale consumers to the system
