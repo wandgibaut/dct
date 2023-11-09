@@ -87,26 +87,32 @@ def get_idea(idea_name : str) -> Response:
         :return: memory object
         :rtype: Response
     '''
-    #validar 
-    return dct.get_redis_memory(args, idea_name)  # dict
+    
+    url = args[0].split(':')
+    redis_url = f'{url[0]}:{str(int(url[1]) + 1)}'
+    return json.dumps(dct.get_redis_memory(redis_url, idea_name))  # dict
     
 
 @app.route('/set_idea/', methods=['POST'])
 def set_idea():
     request_data = request.get_json()
+
+    url = args[0].split(':')
+    redis_url = f'{url[0]}:{str(int(url[1]) + 1)}'
+
     if request_data['full_idea']:
         full_idea = validate_idea(request_data['full_idea'])
         if full_idea is None:
             return Response(status=400, headers={})
 
         idea_name = request_data['idea_name']
-        dct.set_redis_memory(args, idea_name, None, None, full_memory=full_idea)
+        dct.set_redis_memory(redis_url, idea_name, None, None, full_memory=full_idea)
     
     else:
         idea_name = request_data['idea_name']
         field = request_data['field']
         value = request_data['value']
-        dct.set_redis_memory(args, idea_name, field, value)
+        dct.set_redis_memory(redis_url, idea_name, field, value)
     return Response(status=200, headers={})
 
 @app.route('/get_codelet_info/<codelet_name>')

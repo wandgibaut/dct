@@ -22,17 +22,21 @@ import matplotlib.pyplot as plt
 import time
 
 #TODO: add the possibility of including groups
-# 'behavior sensory-memory@tcp@127.0.0.1:9998,sensory-memory@local@127.0.0.1:9998 motor-memory@aaaaa; .... '
-def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name : str, codelets_input_output : str):
+def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name : str, node_params : dict):
     '''
     Adds a new node to the system
         :param node_folder: the folder of the node to be added
         :param ip_port_hostmode: the ip, port and hostmode of the node to be added
         :param new_node_name: the name of the node to be added
-        :param codelets_input_output: the codelets, inputs and outputs of the node to be added. The format is:
-            'codelet_name input1@type@ip/port@group,input2@type@ip/port@group output1@type@ip/port@group,output2@type@ip/port@group; ...'
+        :param node_params: the codelets, inputs and outputs of the node to be added. The format is:
+        codelet1 ={
+            'name': 'codelet_name',
+            'inputs': [{'name': 'memory_name', 'type': 'type', 'ip/port': '127.0.0.1:9998', 'group':[]}],
+            'outputs': [{'name': 'memory_name', 'type': 'type', 'ip/port': '127.0.0.1:9998', 'group':[]}]
+        }
+        node_params = {'codelets': [codelet1]}
     '''
-    change_inputs_outputs_from_all_codelets(node_folder, codelets_input_output)
+    change_inputs_outputs_from_all_codelets(node_folder, node_params)
 
     print(node_folder + ' ' + ip_port_hostmode)
     # calls the add simple container script
@@ -44,45 +48,36 @@ def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name 
     subprocess.check_call([f'docker exec -d {new_node_name} /home/node/nodeMaster.sh {ip_port_hostmode} &' ], shell=True)
 
 
-def change_inputs_outputs_from_all_codelets(node_folder : str, codelets_input_output : str):
+def change_inputs_outputs_from_all_codelets(node_folder : str, node_params : dict):
     '''
     Changes the inputs and outputs of all codelets in the node_folder
         :param node_folder: the folder of the node to be added
-        :param codelets_input_output: the codelets, inputs and outputs of the node to be added. The format is:
-            'codelet_name input1@type@ip/port@group,input2@type@ip/port@group output1@type@ip/port@group,output2@type@ip/port@group; ...'
+        :param node_params: the codelets, inputs and outputs of the node to be added. The format is:
+        codelet1 ={
+            'name': 'codelet_name',
+            'inputs': [{'name': 'memory_name', 'type': 'type', 'ip/port': '127.0.0.1:9998', 'group':[]}],
+            'outputs': [{'name': 'memory_name', 'type': 'type', 'ip/port': '127.0.0.1:9998', 'group':[]}]
+        }
+        node_params = {'codelets': [codelet1]}
     '''
-    codelets_to_add = convert("; ", codelets_input_output)
+    codelets_to_add = node_params['codelets']
     for codelet in codelets_to_add:
         if codelet == '':
             continue
-        name_input_output = convert(' ', codelet)
-        with open(node_folder + '/codelets/' + name_input_output[0] + '/fields.json', 'r+') as json_data:
+        #name_input_output = convert(' ', codelet)
+        with open(node_folder + '/codelets/' + codelet['name'] + '/fields.json', 'r+') as json_data:
             codelet_info = json.load(json_data)
             new_inputs = []
-            if name_input_output[1] != 'none':
-                for input in convert(',', name_input_output[1]):
-                    split_mem_info = convert('@', input)
-                    if len(split_mem_info) == 4:
-                        group = [split_mem_info[3]]
-                    else:
-                        group = []
-                    mem = {"ip/port": split_mem_info[2], "type": split_mem_info[1],
-                           "name": split_mem_info[0], "group": group}
-                    new_inputs.append(mem)
+            if len(codelet['inputs']) != 0:
+                for input_mem in codelet['inputs']:
+                    new_inputs.append(input_mem)
 
             codelet_info['inputs'] = new_inputs
 
             new_outputs = []
-            if name_input_output[2] != 'none':
-                for output in convert(',', name_input_output[2]):
-                    split_mem_info = convert('@', output)
-                    if len(split_mem_info) == 4:
-                        group = [split_mem_info[3]]
-                    else:
-                        group = []
-                    mem = {"ip/port": split_mem_info[2], "type": split_mem_info[1],
-                           "name": split_mem_info[0], "group": group}
-                    new_outputs.append(mem)
+            if len(codelet['outputs']) != 0:
+                for output_mem in codelet['outputs']:
+                    new_outputs.append(output_mem)
 
             codelet_info['outputs'] = new_outputs
 
