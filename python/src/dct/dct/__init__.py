@@ -176,8 +176,9 @@ def get_redis_memory(host_port : str, memory_name : str) -> dict:
         :return: memory object or None if error
         :rtype: dict
     '''
-    host = convert(':', host_port)[0]
-    port = convert(':', host_port)[1]
+    url = host_port.split(':')
+    host = url[0]
+    port = url[1]
     try:
         client = redis.Redis(host=host, port=port)
         return json.loads(client.get(memory_name))
@@ -196,8 +197,9 @@ def set_redis_memory(host_port : str, memory_name : str, field : str, value : ob
         :return: 0 if success, -1 if error
         :rtype: int
     '''
-    host = convert(':', host_port)[0]
-    port = convert(':', host_port)[1]
+    url = host_port.split(':')
+    host = url[0]
+    port = url[1]
 
     client = redis.Redis(host=host, port=port)
 

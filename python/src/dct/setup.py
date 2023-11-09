@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='dct',
-    version='0.1.0',
+    version='0.1.5',
     description='Distributed Cognitive Toolkit',
     url='https://github.com/wandgibaut/dct',
     author='Wandemberg Gibaut',

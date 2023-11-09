@@ -123,10 +123,11 @@ class PythonCodelet:
     def calculate_activation(self):
         ########################################
         # Default Activation ##
-        print("default activation")
+        #print("default activation")
         return 0
 
     def proc(self, activation):
         ########################################
         # Default proc ##
-        print("default proc")
+        #print("default proc")
+        pass
