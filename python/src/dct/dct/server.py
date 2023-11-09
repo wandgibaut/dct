@@ -60,7 +60,7 @@ def get_memory(memory_name : str) -> Response:
 
 @app.route('/set_memory/', methods=['POST'])
 def set_memory():
-    request_data = json.dumps(json.dumps(request.get_json()))
+    request_data = json.dumps(json.loads(request.get_json()))
     memory_name = request_data['memory_name']
     field = request_data['field']
     value = request_data['value']
@@ -95,12 +95,13 @@ def get_idea(idea_name : str) -> Response:
 
 @app.route('/set_idea/', methods=['POST'])
 def set_idea():
-    request_data = json.dumps(request.get_json())
+    #print(request.get_json())
+    request_data = json.loads(request.get_json())
 
     url = args[0].split(':')
     redis_url = f'{url[0]}:{str(int(url[1]) + 1)}'
 
-    if request_data['full_idea']:
+    if 'full_idea' in request_data:
         full_idea = validate_idea(request_data['full_idea'])
         if full_idea is None:
             return Response(status=400, headers={})
@@ -198,7 +199,7 @@ def config_death():
 #TODO: change url
 @app.route('/vote_kill/', methods=['POST'])
 def vote_kill():
-    request_data = json.dumps(request.get_json())
+    request_data = json.loads(request.get_json())
     url = request_data['url']
     
     response = requests.post(url + '/die', json={'voter_url': '2000'})
@@ -208,7 +209,7 @@ def vote_kill():
 
 @app.route('/die/', methods=['POST'])
 def listen_death_democracy():
-    request_data = json.dumps(request.get_json())
+    request_data = json.loads(request.get_json())
     voter_url = request_data['voter_url']
 
     if not hasattr('death_threshold'):

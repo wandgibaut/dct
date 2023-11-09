@@ -20,6 +20,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import time
+from typing import List
 
 #TODO: add the possibility of including groups
 def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name : str, node_params : dict):
@@ -123,7 +124,7 @@ def add_random_consumer(node_folder : str, ip_port_hostmode : str, number_of_fee
         add_node_to_system(node_folder, ip_port_hostmode, 'random_' + str(random.randint(0, 1000)), inputs)
 
 
-def add_multiple_random_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : list[int],
+def add_multiple_random_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : List[int],
                                   list_of_memories_json : str, number_of_nodes : int):
     '''
     Adds multiple random consumers to the system
@@ -145,7 +146,7 @@ def add_multiple_random_consumers(node_folder : str, ip_port_hostmode_list_json 
 
 
 # TODO: test
-def add_multiple_scale_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : list[int],
+def add_multiple_scale_consumers(node_folder : str, ip_port_hostmode_list_json : str, number_of_feeders_array : List[int],
                                   list_of_memories_json : str, number_of_nodes : int):
     '''
     Adds multiple scale consumers to the system
