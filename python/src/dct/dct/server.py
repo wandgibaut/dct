@@ -96,7 +96,11 @@ def get_idea(idea_name : str) -> Response:
 @app.route('/set_idea/', methods=['POST'])
 def set_idea():
     #print(request.get_json())
-    request_data = json.loads(request.get_json())
+    #json.loads(request.get_data())
+    if type(request.get_json()) == dict:
+        request_data = request.get_json()
+    else:
+        request_data = json.loads(request.get_json())
 
     url = args[0].split(':')
     redis_url = f'{url[0]}:{str(int(url[1]) + 1)}'
@@ -106,11 +110,11 @@ def set_idea():
         if full_idea is None:
             return Response(status=400, headers={})
 
-        idea_name = request_data['idea_name']
+        idea_name = request_data['full_idea']['name']
         dct.set_redis_memory(redis_url, idea_name, None, None, full_memory=full_idea)
     
     else:
-        idea_name = request_data['idea_name']
+        idea_name = request_data['name']
         field = request_data['field']
         value = request_data['value']
         dct.set_redis_memory(redis_url, idea_name, field, value)
@@ -258,3 +262,4 @@ if __name__ == "__main__":
     HOST = split(args[0])[0]
     PORT = int(split(args[0])[1])
     app.run(debug=True, host=HOST, port=PORT)
+    #app.run(debug=True, host='127.0.0.1', port=5020)
