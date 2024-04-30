@@ -23,7 +23,7 @@ import time
 from typing import List
 
 #TODO: add the possibility of including groups
-def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name : str, node_params : dict):
+def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name : str, node_params : dict, mount_options: str = ''):
     '''
     Adds a new node to the system
         :param node_folder: the folder of the node to be added
@@ -43,7 +43,7 @@ def add_node_to_system(node_folder : str, ip_port_hostmode : str, new_node_name 
     # calls the add simple container script
     #subprocess.check_call(['./add_simple_container.sh', node_folder, ip_port_hostmode, new_node_name])
 
-    subprocess.check_call([f'docker run --name {new_node_name} -d -it --network host  --env ROOT_NODE_DIR=/home/node wandgibaut/python_codelet /bin/bash &'], shell=True)
+    subprocess.check_call([f'docker run --name {new_node_name} -d -it --network host {mount_options} --env ROOT_NODE_DIR=/home/node wandgibaut/python_codelet /bin/bash &'], shell=True)
     time.sleep(2)
     subprocess.check_call([f'docker cp {node_folder}/. {new_node_name}:/home/node'], shell=True)
     subprocess.check_call([f'docker exec -d {new_node_name} /home/node/nodeMaster.sh {ip_port_hostmode} &' ], shell=True)

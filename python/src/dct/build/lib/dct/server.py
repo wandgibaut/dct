@@ -96,6 +96,7 @@ def get_idea(idea_name : str) -> Response:
 @app.route('/set_idea/', methods=['POST'])
 def set_idea():
     #print(request.get_json())
+    #json.loads(request.get_data())
     if type(request.get_json()) == dict:
         request_data = request.get_json()
     else:
@@ -261,3 +262,4 @@ if __name__ == "__main__":
     HOST = split(args[0])[0]
     PORT = int(split(args[0])[1])
     app.run(debug=True, host=HOST, port=PORT)
+    #app.run(debug=True, host='127.0.0.1', port=5020)
