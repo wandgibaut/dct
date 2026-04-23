@@ -158,7 +158,7 @@ if [ -z ${memory+x} ]
         echo "${SERVER_IPS[0]}"
         #$ IFS=: read -r ip port <<< "${SERVER_IPS[0]}"
         port=$(echo "${SERVER_IPS[0]}" | cut -f 2 -d ":")
-        redis-server --port "$(($port + 1))" &
+        redis-server --port "$(($port + 1))" --save "${memory[seconds]}" "${memory[changes]}" --dir "${memory[dir]}" --dbfilename "${memory[dbfilename]}" &
     fi
 fi
 
